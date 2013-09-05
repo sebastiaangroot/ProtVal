@@ -47,7 +47,7 @@ def main():
 		#Then convert the number to the corresponding list index.
 		choice = 0
 		while True:
-			answer = input("Please enter a module to use: ")
+			answer = input("Please enter a module to use [1 - " + str(len(loaded_modules)) + "]: ")
 			if is_integer(answer):
 				choice = int(answer)
 				if choice > 0 and choice <= len(loaded_modules):
