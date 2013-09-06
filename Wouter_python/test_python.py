@@ -1,6 +1,5 @@
 import re
 from time import localtime
-import csv
 
 print("Hello world!")
 def ask_name():
