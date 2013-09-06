@@ -2,10 +2,10 @@ def getModuleName():
     return "DNS Client Validator"
 
 def getModuleDescription():
-    return "A TCP server to validate TCP clients against"
+    return "Test your DNS settings and records"
 
 def initMod():
-    print("Inside TCP Client Validator")
+    print("Inside DNS Client validator")
     main()
 
 import socket
