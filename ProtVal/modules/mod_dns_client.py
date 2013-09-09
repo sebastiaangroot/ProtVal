@@ -26,14 +26,24 @@ def main():
     answer = my_resolver.query(input_user)
     print(type(my_resolver.nameservers))
     print(type(answer))
+    
+    
 
-    print(answer[0])
+    for answers in answer:
+        print(answers)
     
     if str(host_by_name) == str(answer[0]):
         print("Answer is the same")
     else:
         print("Answer is not the same. This doesn't have to mean that your settings are incorrect.")
         print("Some websites can be reached using different IP-adresses")
+        
+    print("Check MX records")
+    answer = my_resolver.query(input_user, "MX")
+    for answers in answer:
+        print(answers)
+    
+    
             
 if __name__ == "__main__":
     main()        
