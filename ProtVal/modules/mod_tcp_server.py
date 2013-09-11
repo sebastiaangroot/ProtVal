@@ -2,7 +2,7 @@ def getModuleName():
 	return "TCP Server Validator"
 
 def getModuleDescription():
-	return "A TCP client to validate against TCP servers"
+	return "A dummy TCP Client Validator"
 
 def initMod():
 	print("Inside TCP Server Validator")

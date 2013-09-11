@@ -2,7 +2,7 @@ def getModuleName():
     return "DNS Client Validator"
 
 def getModuleDescription():
-    return "Test your DNS settings and records"
+    return "A dummy DNS Client Validator"
 
 def initMod():
     print("Inside DNS Client validator")
