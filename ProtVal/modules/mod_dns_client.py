@@ -38,10 +38,12 @@ def main():
         print("Answer is not the same. This doesn't have to mean that your settings are incorrect.")
         print("Some websites can be reached using different IP-adresses")
         
-    print("Check MX records")
+    print("Check MX records:")
+
     answer = my_resolver.query(input_user, "MX")
     for answers in answer:
         print(answers)
+
     
     
             
