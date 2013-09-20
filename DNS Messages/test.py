@@ -1,6 +1,82 @@
 import math
 import socket
 
+class DNSPacket():
+	def __init__(self):
+		self.packet = [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] #Enough room for the 12-byte header
+	
+	def __testValues__(self, num, min, max, functname):
+		if num < min or num > max:
+			raise ValueError('%s takes values from %i to %i' % (functname, min, max))
+	
+	def __setPacketValue__(self, num, min, max, functname, byte_i, mask, shift):
+		__testValues__(num, min, max, functname)
+		
+		self.packet[byte_i] = self.packet[byte_i] & mask
+		self.packet[byte_i] += (num << shift)
+	
+	def getPacketBytes(self):
+		return bytes(self.packet)
+	
+	def setHeaderID(self, num):
+		__testValues__(num, 0, 2**16-1, 'setHeaderID')
+		
+		bytes = num.to_bytes(2, 'big')
+		self.packet[0] = bytes[0]
+		self.packet[1] = bytes[1]
+	
+	def setHeaderQR(self, num):
+		__setPacketValue__(num, 0, 1, 'setHeaderQR', 2, 0b01111111, 7)
+
+	def setHeaderOPCODE(self, num):
+		__setPacketValue__(num, 0, 15, 'setHeaderOPCODE', 2, 0b10000111, 3)
+	
+	def setHeaderAA(self, num):
+		__setPacketValue__(num, 0, 1, 'setHeaderAA', 2, 0b11111011, 2)
+		
+	def setHeaderTC(self, num):
+		__setPacketValue__(num, 0, 1, 'setHeaderTC', 2, 0b11111101, 1)
+	
+	def setHeaderRD(self, num):
+		__setPacketValue__(num, 0, 1, 'setHeaderRD', 2, 0b11111101, 0)
+	
+	def setHeaderRA(self, num):
+		__setPacketValue__(num, 0, 1, 'setHeaderRA', 3, 0b01111111, 7)
+	
+	def setHeaderZ(self, num):
+		__setPacketValue__(num, 0, 7, 'setHeaderZ', 3, 0b10001111, 4)
+	
+	def setHeaderRCODE(self, num):
+		__setPacketValue__(num, 0, 15, 'setHeaderRCODE', 3, 0b11110000, 0)
+		
+	def setHeaderQDCOUNT(self, num):
+		__testValues__(num, 0, 2**16-1, 'setHeaderQDCOUNT')
+		
+		bytes = num.to_bytes(2, 'big')
+		self.packet[4] = bytes[0]
+		self.packet[5] = bytes[1]
+	
+	def setHeaderANCOUNT(self, num):
+		__testValues__(num, 0, 2**16-1, 'setHeaderANCOUNT')
+		
+		bytes = num.to_bytes(2, 'big')
+		self.packet[6] = bytes[0]
+		self.packet[7] = bytes[1]
+	
+	def setHeaderNSCOUNT(self, num):
+		__testValues__(num, 0, 2**16-1, 'setHeaderNSCOUNT')
+		
+		bytes = num.to_bytes(2, 'big')
+		self.packet[8] = bytes[0]
+		self.packet[9] = bytes[1]
+	
+	def setHeaderARCOUNT(self, num):
+		__testValues__(num, 0, 2**16-1, 'setHeaderARCOUNT')
+		
+		bytes = num.to_bytes(2, 'big')
+		self.packet[10] = bytes[0]
+		self.packet[11] = bytes[1]
+		
 def appendByteArray(array, value):
 	if type(value) == type(int()):
 		if value == 0:
