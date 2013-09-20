@@ -6,10 +6,12 @@ class DNSPacket():
 		self.authorities = []
 		self.additionals = []
 	
+	#Raises a function-specific error if a given number is not between two limits
 	def __testValues__(self, num, min, max, functname):
 		if num < min or num > max:
 			raise ValueError('%s takes values from %i to %i' % (functname, min, max))
 	
+	#Returns a boolean value depending on if given index exists in a list
 	def __testIndex__(self, list, index):
 		if index >= 0 and len(list) < index + 1:
 			return False
@@ -17,12 +19,14 @@ class DNSPacket():
 			return False
 		return True
 	
+	#Clears existing bit field(s) in the header and replaces it with given num at offset byte_i + shift
 	def __setHeaderValue__(self, num, min, max, functname, byte_i, mask, shift):
 		self.__testValues__(num, min, max, functname)
 		
 		self.header[byte_i] = self.header[byte_i] & mask
 		self.header[byte_i] += (num << shift)
 	
+	#Adds a domain name in the <domain-name> format (RFC 1035) to a given sublist
 	def __addRRNAME__(self, master_list, index, domainname):
 		if type(master_list) != type(list):
 			raise TypeError('__setRRName__ expected a list')
@@ -39,6 +43,7 @@ class DNSPacket():
 			master_list[index] += segment.encode()
 		master_list[index].append(0)
 
+	#Adds a 4-byte number to a given sublist
 	def __addRR32bit__(self, master_list, index, num):
 		if type(master_list) != type(list):
 			raise TypeError('__setRR32bit__ expected a list')
@@ -47,6 +52,7 @@ class DNSPacket():
 		self.__testValues__(num, 0, 2**32 - 1, '__setRR32bit__')
 		master_list[index] += num.to_bytes(4, 'big')
 	
+	#Adds a 2-byte number to a given sublist
 	def __addRR16bit__(self, master_list, index, num):
 		if type(master_list) != type(list):
 			raise TypeError('__setRR16bit__ expected a list')
@@ -55,6 +61,7 @@ class DNSPacket():
 		self.__testValues__(num, 0, 2**16 - 1, '__setRR16bit__')
 		master_list[index] += num.to_bytes(2, 'big')
 	
+	#Adds a list of arbitrary length to a given sublist
 	def __addRRRDATA__(self, master_list, index, data_list):
 		if type(master_list) != type(list):
 			raise TypeError('__addRRRDATA__ expected a list')
@@ -64,6 +71,7 @@ class DNSPacket():
 			raise TypeError('__addRRRDATA__ expected a list for data_list')
 		master_list[index] += data_list
 
+	#Returns a byte array of the packet, for sending it over a socket
 	def getPacketBytes(self):
 		packet = bytes(self.header)
 		for question in self.questions:
@@ -76,10 +84,12 @@ class DNSPacket():
 			packet = packet + bytes(additional)
 		return packet
 	
+	#Creates a new question section in the self.questions master list
 	def createQuestionSection(self):
 		self.questions.append([])
 		return len(self.questions) - 1
 
+	#Removes a given (or the last) question section of the self.questions master list
 	def removeQuestionSection(self, question_i = -1):
 		if len(self.questions) == 0:
 			return
@@ -87,6 +97,7 @@ class DNSPacket():
 			question_i = len(self.questions) - 1
 		del self.questions[question_i]
 
+	#Keeps the given question section, but clears it of data
 	def clearQuestionSection(self, question_i):
 		if not self.__testIndex__(self.questions, question_i):
 			return
@@ -140,65 +151,79 @@ class DNSPacket():
 			return
 		self.additionals[additional_i] = []
 
+	#Sets the two ID bytes of the DNS header
 	def setHeaderID(self, num):
 		self.__testValues__(num, 0, 2**16-1, 'setHeaderID')
 		
 		bytes = num.to_bytes(2, 'big')
 		self.header[0] = bytes[0]
 		self.header[1] = bytes[1]
-	
+
+	#Sets the QR bit of the DNS header
 	def setHeaderQR(self, num):
 		self.__setHeaderValue__(num, 0, 1, 'setHeaderQR', 2, 0b01111111, 7)
 
+	#Sets the four OPCODE bits of the DNS header
 	def setHeaderOPCODE(self, num):
 		self.__setHeaderValue__(num, 0, 15, 'setHeaderOPCODE', 2, 0b10000111, 3)
-	
+
+	#Sets the AA bit of the DNS header
 	def setHeaderAA(self, num):
 		self.__setHeaderValue__(num, 0, 1, 'setHeaderAA', 2, 0b11111011, 2)
-		
+
+	#Sets the TC bit of the DNS header
 	def setHeaderTC(self, num):
 		self.__setHeaderValue__(num, 0, 1, 'setHeaderTC', 2, 0b11111101, 1)
-	
+
+	#Sets the RD bit of the DNS header
 	def setHeaderRD(self, num):
 		self.__setHeaderValue__(num, 0, 1, 'setHeaderRD', 2, 0b11111101, 0)
-	
+
+	#Sets the RA bit of the DNS header
 	def setHeaderRA(self, num):
 		self.__setHeaderValue__(num, 0, 1, 'setHeaderRA', 3, 0b01111111, 7)
-	
+
+	#Sets the three Z bits of the DNS header
 	def setHeaderZ(self, num):
 		self.__setHeaderValue__(num, 0, 7, 'setHeaderZ', 3, 0b10001111, 4)
-	
+
+	#Sets the four RCODE  bits of the DNS header
 	def setHeaderRCODE(self, num):
 		self.__setHeaderValue__(num, 0, 15, 'setHeaderRCODE', 3, 0b11110000, 0)
-		
+
+	#Sets the two QDCOUNT bytes of the DNS header
 	def setHeaderQDCOUNT(self, num):
 		self.__testValues__(num, 0, 2**16-1, 'setHeaderQDCOUNT')
 		
 		bytes = num.to_bytes(2, 'big')
 		self.header[4] = bytes[0]
 		self.header[5] = bytes[1]
-	
+
+	#Sets the two ANCOUNT bytes of the DNS header
 	def setHeaderANCOUNT(self, num):
 		self.__testValues__(num, 0, 2**16-1, 'setHeaderANCOUNT')
 		
 		bytes = num.to_bytes(2, 'big')
 		self.header[6] = bytes[0]
 		self.header[7] = bytes[1]
-	
+
+	#Sets the two NSCOUNT bytes of the DNS header
 	def setHeaderNSCOUNT(self, num):
 		self.__testValues__(num, 0, 2**16-1, 'setHeaderNSCOUNT')
 		
 		bytes = num.to_bytes(2, 'big')
 		self.header[8] = bytes[0]
 		self.header[9] = bytes[1]
-	
+
+	#Sets the two ARCOUNT bytes of the DNS header
 	def setHeaderARCOUNT(self, num):
 		self.__testValues__(num, 0, 2**16-1, 'setHeaderARCOUNT')
 		
 		bytes = num.to_bytes(2, 'big')
 		self.header[10] = bytes[0]
 		self.header[11] = bytes[1]
-		
+
+	#Adds a QNAME field to a given question section
 	def addQuestionQNAME(self, domainname, question_i):
 		if not self.__testIndex__(self.questions, question_i):
 			return
@@ -210,34 +235,42 @@ class DNSPacket():
 				self.questions[question_i].append(len(segment))
 			self.questions[question_i] += segment.encode()
 		self.questions[question_i].append(0)
-	
+
+	#Adds a QTYPE field to a given question section
 	def addQuestionQTYPE(self, num, question_i):
 		if not self.__testIndex__(self.questions, question_i):
 			return
 		self.__testValues__(num, 0, 2**16-1, 'setQuestionQTYPE')
 		self.questions[question_i] += num.to_bytes(2, 'big')
 
+	#Adds a QCLASS field to a given question section
 	def addQuestionQCLASS(self, num, question_i):
 		if not self.__testIndex__(self.questions, question_i):
 			return
 		self.__testValues__(num, 0, 2**16-1, 'setQuestionQCLASS')
 		self.questions[question_i] += num.to_bytes(2, 'big')
-	
+
+	#Adds a Resource Record NAME field to a given answer section
 	def addAnswerNAME(self, domainname, index):
 		self.__addRRNAME__(self.answers, index, domainname)
-	
+
+	#Adds a Resource Record TYPE field to a given answer section
 	def addAnswerTYPE(self, num, index):
 		self.__addRR16bit__(self.answers, index, num)
-	
+
+	#Adds a Resource Record CLASS field to a given answer section
 	def addAnswerCLASS(self, num, index):
 		self.__addRR16bit__(self.answers, index, num)
-	
+
+	#Adds a Resource Record TTL field to a given answer section
 	def addAnswerTTL(self, num, index):
 		self.__addRR32bit__(self.answers, index, num)
-	
+
+	#Adds a Resource Record RDLENGTH field to a given answer section
 	def addAnswerRDLENGTH(self, num, index):
 		self.__addRR16bit__(self.answers, index, num)
-	
+
+	#Adds a Resource Record RDATA field to a given answer section given a data list of arbitrary length
 	def addAnswerRDATA(self, data_list, index):
 		self.__addRRRDATA__(self.answers, index, data_list)
 	
