@@ -65,10 +65,20 @@ class DNSPacket():
 		master_list[index] += data_list
 
 	def getPacketBytes(self):
-		return bytes(self.header)
+		packet = bytes(self.header)
+		for question in self.questions:
+			packet = packet + bytes(question)
+		for answer in self.answers:
+			packet = packet + bytes(answer)
+		for authority in self.authorities:
+			packet = packet + bytes(authority)
+		for additional in self.additionals:
+			packet = packet + bytes(additional)
+		return packet
 	
 	def createQuestionSection(self):
 		self.questions.append([])
+		return len(self.questions) - 1
 
 	def removeQuestionSection(self, question_i = -1):
 		if len(self.questions) == 0:
@@ -77,13 +87,14 @@ class DNSPacket():
 			question_i = len(self.questions) - 1
 		del self.questions[question_i]
 
-	def clearQuestion(self, question_i):
+	def clearQuestionSection(self, question_i):
 		if not self.__testIndex__(self.questions, question_i):
 			return
 		self.questions[question_i] = []
 		
 	def createAnswerSection(self):
 		self.answers.append([])
+		return len(self.answers) - 1
 	
 	def removeAnswerSection(self, answer_i = -1):
 		if len(self.answers) == 0:
@@ -92,8 +103,14 @@ class DNSPacket():
 			answer_i = len(self.answers) - 1
 		del self.answers[answer_i]
 		
+	def clearAnswerSection(self, answer_i):
+		if not self.__testIndex__(self.answers, answer_i):
+			return
+		self.answers[answer_i] = []
+
 	def createAuthoritySection(self):
 		self.authorities.append([])
+		return len(self.authorities) - 1
 	
 	def removeAuthoritySection(self, authority_i = -1):
 		if len(self.authorities) == 0:
@@ -101,9 +118,15 @@ class DNSPacket():
 		if authority_i == -1:
 			authority_i = len(self.authorities) - 1
 		del self.authorities[authority_i]
-	
+
+	def clearAuthoritySection(self, authority_i):
+		if not self.__testIndex__(self.authorities, authority_i):
+			return
+		self.authorities[authority_i] = []
+
 	def createAdditionalSection(self):
 		self.additionals.append([])
+		return len(self.additionals) - 1
 		
 	def removeAdditionalSection(self, additional_i = -1):
 		if len(self.questions) == 0:
@@ -112,6 +135,11 @@ class DNSPacket():
 			additional_i = len(self.additionals) - 1
 		del self.additionals[additional_i]
 	
+	def clearAdditionalSection(self, additional_i):
+		if not self.__testIndex__(self.additionals, additional_i):
+			return
+		self.additionals[additional_i] = []
+
 	def setHeaderID(self, num):
 		self.__testValues__(num, 0, 2**16-1, 'setHeaderID')
 		
