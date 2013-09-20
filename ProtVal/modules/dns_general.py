@@ -37,7 +37,7 @@ class DNSPacket():
 			else:
 				master_list[index].append(len(segment))
 			master_list[index] += segment.encode()
-			master_list[index].append(0)
+		master_list[index].append(0)
 
 	def __addRR32bit__(self, master_list, index, num):
 		if type(master_list) != type(list):
@@ -209,7 +209,7 @@ class DNSPacket():
 			else:
 				self.questions[question_i].append(len(segment))
 			self.questions[question_i] += segment.encode()
-			self.questions[question_i].append(0)
+		self.questions[question_i].append(0)
 	
 	def addQuestionQTYPE(self, num, question_i):
 		if not self.__testIndex__(self.questions, question_i):
