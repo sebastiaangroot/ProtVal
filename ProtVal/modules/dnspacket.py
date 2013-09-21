@@ -71,6 +71,27 @@ class DNSPacket():
 			raise TypeError('__addRRRDATA__ expected a list for data_list')
 		master_list[index] += data_list
 
+	def bytestr(self, num):
+		bin_num = bin(num)[2:]
+		rest = 8 - len(bin_num)
+		bin_num = ('0' * rest) + bin_num
+		return bin_num
+	
+	def printHeader(self):
+		print('+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+')
+		print('|                      ID:%s                      |' % (self.bytestr(self.header[0]) + self.bytestr(self.header[1])))
+		print('+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+')
+		print('|QR%s|  OPCODE%s   |AA%s|TC%s|RD%s|RA%s|   Z%s    |   RCODE%s    |' % (self.bytestr(self.header[2])[0], self.bytestr(self.header[2])[1:5], self.bytestr(self.header[2])[5], self.bytestr(self.header[2])[6], self.bytestr(self.header[2])[7], self.bytestr(self.header[3])[0], self.bytestr(self.header[3])[1:4], self.bytestr(self.header[3])[4:7]))
+		print('+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+')
+		print('|                    QDCOUNT:%s                   |' % (self.bytestr(self.header[4]) + self.bytestr(self.header[5])))
+		print('+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+')
+		print('|                    ANCOUNT:%s                   |' % (self.bytestr(self.header[6]) + self.bytestr(self.header[7])))
+		print('+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+')
+		print('|                    NSCOUNT:%s                   |' % (self.bytestr(self.header[8]) + self.bytestr(self.header[9])))
+		print('+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+')
+		print('|                    ARCOUNT:%s                   |' % (self.bytestr(self.header[10]) + self.bytestr(self.header[11])))
+		print('+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+')
+			
 	#Returns a byte array of the packet, for sending it over a socket
 	def getPacketBytes(self):
 		packet = bytes(self.header)
