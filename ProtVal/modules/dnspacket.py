@@ -28,7 +28,7 @@ class DNSPacket():
 	
 	#Adds a domain name in the <domain-name> format (RFC 1035) to a given sublist
 	def __addRRNAME__(self, master_list, index, domainname):
-		if type(master_list) != type(list):
+		if type(master_list) != type(list()):
 			raise TypeError('__setRRName__ expected a list')
 		if not self.__testIndex__(master_list, index):
 			raise IndexError('__setRRName__ received an invalid list index')
@@ -45,7 +45,7 @@ class DNSPacket():
 
 	#Adds a 4-byte number to a given sublist
 	def __addRR32bit__(self, master_list, index, num):
-		if type(master_list) != type(list):
+		if type(master_list) != type(list()):
 			raise TypeError('__setRR32bit__ expected a list')
 		if not self.__testIndex__(master_list, index):
 			raise IndexError('__setRR32bit__ received an invalid list index')
@@ -54,7 +54,7 @@ class DNSPacket():
 	
 	#Adds a 2-byte number to a given sublist
 	def __addRR16bit__(self, master_list, index, num):
-		if type(master_list) != type(list):
+		if type(master_list) != type(list()):
 			raise TypeError('__setRR16bit__ expected a list')
 		if not self.__testIndex__(master_list, index):
 			raise IndexError('__setRR16bit__ received an invalid list index')
@@ -63,7 +63,7 @@ class DNSPacket():
 	
 	#Adds a list of arbitrary length to a given sublist
 	def __addRRRDATA__(self, master_list, index, data_list):
-		if type(master_list) != type(list):
+		if type(master_list) != type(list()):
 			raise TypeError('__addRRRDATA__ expected a list')
 		if not self.__testIndex__(master_list, index):
 			raise IndexError('__setRRRDATA__ received an invalid list index')
