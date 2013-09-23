@@ -1,10 +1,13 @@
+import socket
+
 class DNSPacket():
 	def __init__(self):
-		self.header = [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] #Enough room for the 12-byte header
+		self.header = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] #Enough room for the 12-byte header
 		self.questions = []
 		self.answers = []
 		self.authorities = []
 		self.additionals = []
+		self.answer_server = []
 	
 	#Raises a function-specific error if a given number is not between two limits
 	def __testValues__(self, num, min, max, functname):
@@ -92,6 +95,12 @@ class DNSPacket():
 		print('|                    ARCOUNT:%s                   |' % (self.bytestr(self.header[10]) + self.bytestr(self.header[11])))
 		print('+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+')
 			
+	def getAnswerBytes(self):
+		clientsocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+		clientsocket.sendto(self.getPacketBytes(), ('85.12.6.41', 53))
+		information_received = clientsocket.recv(5000)
+		return information_received
+
 	#Returns a byte array of the packet, for sending it over a socket
 	def getPacketBytes(self):
 		packet = bytes(self.header)
@@ -330,3 +339,13 @@ class DNSPacket():
 	
 	def addAdditionalRDATA(self, num, data_list):
 		self.__addRRRDATA__(self.answers, index, data_list)
+
+def main():
+	print("Class methods names of DNSPacket")
+	for i in dir(DNSPacket):
+		if '_' not in i:
+			print(i)
+
+		
+if __name__ == '__main__':
+	main()
