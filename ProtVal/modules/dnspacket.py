@@ -1,5 +1,6 @@
 import socket
 import codecs
+import collections
 
 class DNSPacket():
 	def __init__(self):
@@ -109,29 +110,65 @@ class DNSPacket():
 			packet = packet + bytes(additional)
 		return packet
 	
+	def removeBin(self, value):
+		if len(value) != 10 and len(value) > 2:
+			value_stripped = value[2:]
+			return_value = '0' * (8-len(value[2:])) + value_stripped
+			print('debug', return_value)
+			return return_value
+		elif len(value) != 10 and len(value) == 2:
+			return_value = '0' * 8
+			print('debug', return_value)
+			return '0' * 8
+		elif len(value) == 10:
+			return_value = value
+			print('debug', return_value)
+			return return_value
+		
+	
 	def parseResponse(self, byte_array):
+		
 		print("Inside parseResponse") #for debugging purposes
 		print("Printing byte_array:", byte_array)
+		print("test:", byte_array[1])
+		dict_items = {}
+		dict_items['ID'] = self.removeBin(bin(byte_array[0] +byte_array[1]))
+		print(dict_items['ID'])
+		print('test byte_array', bin(byte_array[1]))
 		
+		list = ['QR', 'OPCODE', 'AA', 'TC', 'RD']
+		bin_header = self.removeBin(bin(byte_array[2]))
+		print(bin_header)
+		dict_items[list[0]] = bin_header[0]
+		dict_items[list[1]] = bin_header[1:5]
+		i = 5
+		while i < 8:
+			dict_items[list[i-3]] = bin_header[i]
+			i += 1
+		bin_header = self.removeBin(bin(byte_array[3]))
+		print('testen', byte_array[3])
+		dict_items['RA'] = bin_header[0]
+		dict_items['Z'] = bin_header[1:4]
+		dict_items['RCODE'] = bin_header[4:]
 		
-		
+		print(dict_items)
 		
 	def testResponse(self):
 		buffer_size = 1024
 		
-		p = DNSPacket()
-		p.setHeaderID(0b10011001)
-		p.setHeaderRD(1)
-		p.setHeaderQDCOUNT(1)
-		i = p.createQuestionSection()
-		p.addQuestionQNAME('test.iamotor.nl', i)
-		p.addQuestionQTYPE(1, i)
-		p.addQuestionQCLASS(1, i)
+		
+		self.setHeaderID(0b10011001)
+		self.setHeaderRD(1)
+		self.setHeaderQDCOUNT(1)
+		i = self.createQuestionSection()
+		self.addQuestionQNAME('test.iamotor.nl', i)
+		self.addQuestionQTYPE(1, i)
+		self.addQuestionQCLASS(1, i)
 		s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-		s.sendto(p.getPacketBytes(), ('85.12.6.41', 53))
-		data = s.recv(buffer_size)
+		s.sendto(self.getPacketBytes(), ('85.12.6.41', 53))
+		self.data = s.recv(buffer_size)
 		s.close()
-		return data
+		return self.data
 	
 	#Creates a new question section in the self.questions master list
 	def createQuestionSection(self):
@@ -366,7 +403,8 @@ def main():
 			print(i)
 	q = DNSPacket()
 	test_array = q.testResponse()
-	q.parseResponse(test_array)
+	resp = DNSPacket()
+	resp.parseResponse(test_array)
 		
 if __name__ == '__main__':
 	main()
