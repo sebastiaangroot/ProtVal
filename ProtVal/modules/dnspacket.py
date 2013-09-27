@@ -1,4 +1,5 @@
 import socket
+import codecs
 
 class DNSPacket():
 	def __init__(self):
@@ -94,12 +95,6 @@ class DNSPacket():
 		print('+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+')
 		print('|                    ARCOUNT:%s                   |' % (self.bytestr(self.header[10]) + self.bytestr(self.header[11])))
 		print('+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+')
-			
-	def getAnswerBytes(self):
-		clientsocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-		clientsocket.sendto(self.getPacketBytes(), ('85.12.6.41', 53))
-		information_received = clientsocket.recv(5000)
-		return information_received
 
 	#Returns a byte array of the packet, for sending it over a socket
 	def getPacketBytes(self):
@@ -113,6 +108,30 @@ class DNSPacket():
 		for additional in self.additionals:
 			packet = packet + bytes(additional)
 		return packet
+	
+	def parseResponse(self, byte_array):
+		print("Inside parseResponse") #for debugging purposes
+		print("Printing byte_array:", byte_array)
+		
+		
+		
+		
+	def testResponse(self):
+		buffer_size = 1024
+		
+		p = DNSPacket()
+		p.setHeaderID(0b10011001)
+		p.setHeaderRD(1)
+		p.setHeaderQDCOUNT(1)
+		i = p.createQuestionSection()
+		p.addQuestionQNAME('test.iamotor.nl', i)
+		p.addQuestionQTYPE(1, i)
+		p.addQuestionQCLASS(1, i)
+		s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+		s.sendto(p.getPacketBytes(), ('85.12.6.41', 53))
+		data = s.recv(buffer_size)
+		s.close()
+		return data
 	
 	#Creates a new question section in the self.questions master list
 	def createQuestionSection(self):
@@ -345,7 +364,9 @@ def main():
 	for i in dir(DNSPacket):
 		if '_' not in i:
 			print(i)
-
+	q = DNSPacket()
+	test_array = q.testResponse()
+	q.parseResponse(test_array)
 		
 if __name__ == '__main__':
 	main()
