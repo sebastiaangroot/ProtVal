@@ -130,28 +130,27 @@ class DNSPacket():
 		print("Inside parseResponse") #for debugging purposes
 		print("Printing byte_array:", byte_array)
 		print("test:", byte_array[1])
-		response_items = {}
-		response_items['ID'] = self.removeBin(bin(byte_array[0] +byte_array[1]))
-		print(response_items['ID'])
+		self.response_items['ID'] = self.removeBin(bin(byte_array[0] +byte_array[1]))
+		print(self.response_items['ID'])
 		print('test byte_array', bin(byte_array[1]))
 		
 		list_header = ['QR', 'OPCODE', 'AA', 'TC', 'RD']
 		bin_header = self.removeBin(bin(byte_array[2]))
 		print(bin_header)
-		response_items[list_header[0]] = bin_header[0]
-		response_items[list_header[1]] = bin_header[1:5]
+		self.response_items[list_header[0]] = bin_header[0]
+		self.response_items[list_header[1]] = bin_header[1:5]
 		i = 5
 		while i < 8:
-			response_items[list_header[i-3]] = bin_header[i]
+			self.response_items[list_header[i-3]] = bin_header[i]
 			i += 1
 		bin_header = self.removeBin(bin(byte_array[3]))
 		print('bin_header', bin_header)
 		print('testen', byte_array[3])
-		response_items['RA'] = bin_header[0]
-		response_items['Z'] = bin_header[1:4]
-		response_items['RCODE'] = bin_header[4:]
+		self.response_items['RA'] = bin_header[0]
+		self.response_items['Z'] = bin_header[1:4]
+		self.response_items['RCODE'] = bin_header[4:]
 		
-		print(response_items)
+		print(self.response_items)
 		
 	def testResponse(self):
 		buffer_size = 1024
