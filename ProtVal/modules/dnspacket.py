@@ -1,6 +1,4 @@
 import socket
-import codecs
-import collections
 
 class DNSPacket():
 	def __init__(self):
@@ -10,6 +8,7 @@ class DNSPacket():
 		self.authorities = []
 		self.additionals = []
 		self.answer_server = []
+		self.response_items = {}
 	
 	#Raises a function-specific error if a given number is not between two limits
 	def __testValues__(self, num, min, max, functname):
@@ -111,17 +110,17 @@ class DNSPacket():
 		return packet
 	
 	def removeBin(self, value):
-		if len(value) != 10 and len(value) > 2:
+		if len(value) > 2:
 			value_stripped = value[2:]
 			return_value = '0' * (8-len(value[2:])) + value_stripped
 			print('debug', return_value)
 			return return_value
-		elif len(value) != 10 and len(value) == 2:
+		elif len(value) <= 2:
 			return_value = '0' * 8
 			print('debug', return_value)
 			return '0' * 8
 		elif len(value) == 10:
-			return_value = value
+			return_value = value[2:]
 			print('debug', return_value)
 			return return_value
 		
@@ -131,27 +130,28 @@ class DNSPacket():
 		print("Inside parseResponse") #for debugging purposes
 		print("Printing byte_array:", byte_array)
 		print("test:", byte_array[1])
-		dict_items = {}
-		dict_items['ID'] = self.removeBin(bin(byte_array[0] +byte_array[1]))
-		print(dict_items['ID'])
+		response_items = {}
+		response_items['ID'] = self.removeBin(bin(byte_array[0] +byte_array[1]))
+		print(response_items['ID'])
 		print('test byte_array', bin(byte_array[1]))
 		
-		list = ['QR', 'OPCODE', 'AA', 'TC', 'RD']
+		list_header = ['QR', 'OPCODE', 'AA', 'TC', 'RD']
 		bin_header = self.removeBin(bin(byte_array[2]))
 		print(bin_header)
-		dict_items[list[0]] = bin_header[0]
-		dict_items[list[1]] = bin_header[1:5]
+		response_items[list_header[0]] = bin_header[0]
+		response_items[list_header[1]] = bin_header[1:5]
 		i = 5
 		while i < 8:
-			dict_items[list[i-3]] = bin_header[i]
+			response_items[list_header[i-3]] = bin_header[i]
 			i += 1
 		bin_header = self.removeBin(bin(byte_array[3]))
+		print('bin_header', bin_header)
 		print('testen', byte_array[3])
-		dict_items['RA'] = bin_header[0]
-		dict_items['Z'] = bin_header[1:4]
-		dict_items['RCODE'] = bin_header[4:]
+		response_items['RA'] = bin_header[0]
+		response_items['Z'] = bin_header[1:4]
+		response_items['RCODE'] = bin_header[4:]
 		
-		print(dict_items)
+		print(response_items)
 		
 	def testResponse(self):
 		buffer_size = 1024
