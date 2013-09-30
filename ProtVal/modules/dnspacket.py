@@ -166,7 +166,7 @@ class DNSPacket():
 			print ('test') 
 			while x < iteration_octet:
 				print('inside x<iteration_octet')
-				self.response_items['domain_name_' + str(z) +'part'] = self.response_items.setdefault('domain_name_' + str(z) +'part', '') + chr(byte_array[y])
+				self.response_items['domain_name_' + str(i) + str(z) +'part'] = self.response_items.setdefault('domain_name_' + str(i) + str(z) +'part', '') + chr(byte_array[y])
 				print(chr(byte_array[y]))
 				x += 1
 				y+=1
@@ -178,6 +178,12 @@ class DNSPacket():
 			z += 1
 			if iteration_octet == 0:
 				i += 1
+				z = 1
+				x = 0
+				y = iteration_read_label + 2
+				iteration_read_label += 2
+				iteration_octet = byte_array[iteration_read_label]
+				print('y is:', y)
 		
 		print(self.response_items)
 		
