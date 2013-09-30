@@ -150,6 +150,35 @@ class DNSPacket():
 		self.response_items['Z'] = bin_header[1:4]
 		self.response_items['RCODE'] = bin_header[4:]
 		
+		self.response_items['QDCOUNT'] = self.removeBin(bin(byte_array[4] +byte_array[5]))
+		self.response_items['ANCOUNT'] = self.removeBin(bin(byte_array[6] +byte_array[7]))
+		self.response_items['NSCOUNT'] = self.removeBin(bin(byte_array[8] +byte_array[9]))
+		self.response_items['ARCOUNT'] = self.removeBin(bin(byte_array[10] +byte_array[11]))
+		
+		iteration_read_label = 12
+		iteration_qdcount = byte_array[4] +byte_array[5]
+		iteration_octet = byte_array[12]
+		i = 0
+		x = 0
+		y = 13
+		z = 1
+		while i < iteration_qdcount:
+			print ('test') 
+			while x < iteration_octet:
+				print('inside x<iteration_octet')
+				self.response_items['domain_name_' + str(z) +'part'] = self.response_items.setdefault('domain_name_' + str(z) +'part', '') + chr(byte_array[y])
+				print(chr(byte_array[y]))
+				x += 1
+				y+=1
+			x = 0
+			y += 1
+			print('x is:', x, 'y is:', y, 'z is:', z)
+			iteration_read_label += iteration_octet + 1
+			iteration_octet = byte_array[iteration_read_label]
+			z += 1
+			if iteration_octet == 0:
+				i += 1
+		
 		print(self.response_items)
 		
 	def testResponse(self):
@@ -401,9 +430,8 @@ def main():
 		if '_' not in i:
 			print(i)
 	q = DNSPacket()
-	test_array = q.testResponse()
-	resp = DNSPacket()
-	resp.parseResponse(test_array)
+	byte_array = q.testResponse()
+	q.parseResponse(byte_array)
 		
 if __name__ == '__main__':
 	main()
