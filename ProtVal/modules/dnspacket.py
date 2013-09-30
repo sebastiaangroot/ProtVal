@@ -184,6 +184,8 @@ class DNSPacket():
 				iteration_read_label += 2
 				iteration_octet = byte_array[iteration_read_label]
 				print('y is:', y)
+		iterable = y
+		
 		
 		print(self.response_items)
 		
