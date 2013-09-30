@@ -205,6 +205,20 @@ class DNSPacket():
 		self.data = s.recv(buffer_size)
 		s.close()
 		return self.data
+		
+	#Creates a standard query, returns the DNSPacket object
+	def getStandardQueryPacket(self, domainname):
+		self.setHeaderID(0b10011001)
+		self.setHeaderQR(0)
+		self.setHeaderOPCODE(0)
+		self.setHeaderTC(0) #Set to not-truncated for now
+		self.setHeaderRD(1) #Query will be copied in the response
+		self.setHeaderZ(0) #Must be zero in all queries and responses
+		i = self.createQuestionSection()
+		self.addQuestionQNAME(domainname, i)
+		self.addQuestionQTYPE(1, i) #A, IPv4 address
+		self.addQuestionQTYPE(1, i) #IN, Internet
+		return self	
 	
 	#Creates a new question section in the self.questions master list
 	def createQuestionSection(self):
@@ -440,6 +454,12 @@ def main():
 	q = DNSPacket()
 	byte_array = q.testResponse()
 	q.parseResponse(byte_array)
+	
+	print('Koen\'s test')
+	r = DNSPacket()
+	standard_array = r.getStandardQueryPacket('koenveelenturf.nl')
+	print(r.header)
+	print(r.questions)	
 		
 if __name__ == '__main__':
 	main()
