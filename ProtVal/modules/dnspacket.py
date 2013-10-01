@@ -220,7 +220,6 @@ class DNSPacket():
 		i = self.createQuestionSection()
 		self.addQuestionQNAME(domainname, i)
 		self.addQuestionQTYPE(1, i) #A, IPv4 address
-		return self.data
 	
 	#Creates a new question section in the self.questions master list
 	def createQuestionSection(self):
