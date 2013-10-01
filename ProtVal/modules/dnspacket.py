@@ -220,10 +220,6 @@ class DNSPacket():
 		self.addQuestionQNAME(domainname, i)
 		self.addQuestionQTYPE(1, i) #A, IPv4 address
 		self.addQuestionQTYPE(1, i) #IN, Internet
-		s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-		s.sendto(self.getPacketBytes(), ('85.12.6.41', 53))
-		self.data = s.recv(buffer_size)
-		s.close()
 		return self.data
 	
 	#Creates a new question section in the self.questions master list
