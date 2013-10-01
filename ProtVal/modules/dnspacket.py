@@ -129,14 +129,14 @@ class DNSPacket():
 		
 		print("Inside parseResponse") #for debugging purposes
 		print("Printing byte_array:", byte_array)
-		print("test:", byte_array[1])
+		#print("test:", byte_array[1])
 		self.response_items['ID'] = self.removeBin(bin(byte_array[0] +byte_array[1]))
-		print(self.response_items['ID'])
-		print('test byte_array', bin(byte_array[1]))
+		#print(self.response_items['ID'])
+		#print('test byte_array', bin(byte_array[1]))
 		
 		list_header = ['QR', 'OPCODE', 'AA', 'TC', 'RD']
 		bin_header = self.removeBin(bin(byte_array[2]))
-		print(bin_header)
+		#print(bin_header)
 		self.response_items[list_header[0]] = bin_header[0]
 		self.response_items[list_header[1]] = bin_header[1:5]
 		i = 5
@@ -144,8 +144,8 @@ class DNSPacket():
 			self.response_items[list_header[i-3]] = bin_header[i]
 			i += 1
 		bin_header = self.removeBin(bin(byte_array[3]))
-		print('bin_header', bin_header)
-		print('testen', byte_array[3])
+		#print('bin_header', bin_header)
+		#print('testen', byte_array[3])
 		self.response_items['RA'] = bin_header[0]
 		self.response_items['Z'] = bin_header[1:4]
 		self.response_items['RCODE'] = bin_header[4:]
@@ -162,23 +162,30 @@ class DNSPacket():
 		x = 0
 		y = 13
 		z = 1
-		i_test = None
+		i_test = 0
+		self.response_items
 		self.temp_dict = {}
 		while i < iteration_qdcount:
-			print ('test') 
-			if i != i_test:
-				self.response_items['domain_name_' + str(i)[i]] = []
-				i_test = i
+			if i_test == 0 and iteration_qdcount == 1:
+				self.response_items['QNAME'] = []
+				#print ('test') 
+				i_test = 1
+			elif i_test == 0:
+				self.response_items['QNAME'] = [[]] *iteration_qdcount
+				i_test = 1
 			while x < iteration_octet:
-				print('inside x<iteration_octet')
+				#print('inside x<iteration_octet')
 				self.temp_dict['domain_name_' + str(i) + str(z) +'part'] = self.temp_dict.setdefault('domain_name_' + str(i) + str(z) +'part', '') + chr(byte_array[y])
-				print(chr(byte_array[y]))
+				#print(chr(byte_array[y]))
 				x += 1
 				y+=1
-			self.response_items['domain_name_' + str(i)[i]].append(self.temp_dict['domain_name_' + str(i) + str(z) +'part'])
+			if iteration_qdcount ==1:
+				self.response_items['QNAME'].append(self.temp_dict['domain_name_' + str(i) + str(z) +'part'])
+			else:
+				self.response_items['QNAME'][i].append(self.temp_dict['domain_name_' + str(i) + str(z) +'part'])
 			x = 0
 			y += 1
-			print('x is:', x, 'y is:', y, 'z is:', z)
+			#print('x is:', x, 'y is:', y, 'z is:', z)
 			iteration_read_label += iteration_octet + 1
 			iteration_octet = byte_array[iteration_read_label]
 			z += 1
@@ -192,6 +199,8 @@ class DNSPacket():
 				print('y is:', y)
 		del self.temp_dict
 		iterable = y
+		
+		print('iterable:', iterable)
 		
 		print(self.response_items)
 		return(self.response_items)
