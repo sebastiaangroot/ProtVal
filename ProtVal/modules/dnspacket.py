@@ -162,14 +162,20 @@ class DNSPacket():
 		x = 0
 		y = 13
 		z = 1
+		i_test = None
+		self.temp_dict = {}
 		while i < iteration_qdcount:
 			print ('test') 
+			if i != i_test:
+				self.response_items['domain_name_' + str(i)[i]] = []
+				i_test = i
 			while x < iteration_octet:
 				print('inside x<iteration_octet')
-				self.response_items['domain_name_' + str(i) + str(z) +'part'] = self.response_items.setdefault('domain_name_' + str(i) + str(z) +'part', '') + chr(byte_array[y])
+				self.temp_dict['domain_name_' + str(i) + str(z) +'part'] = self.temp_dict.setdefault('domain_name_' + str(i) + str(z) +'part', '') + chr(byte_array[y])
 				print(chr(byte_array[y]))
 				x += 1
 				y+=1
+			self.response_items['domain_name_' + str(i)[i]].append(self.temp_dict['domain_name_' + str(i) + str(z) +'part'])
 			x = 0
 			y += 1
 			print('x is:', x, 'y is:', y, 'z is:', z)
@@ -184,6 +190,7 @@ class DNSPacket():
 				iteration_read_label += 2
 				iteration_octet = byte_array[iteration_read_label]
 				print('y is:', y)
+		del self.temp_dict
 		iterable = y
 		
 		print(self.response_items)
@@ -456,13 +463,13 @@ def main():
 	byte_array = q.testResponse()
 	q.parseResponse(byte_array)
 	
-	print('Koen\'s test')
-	r = DNSPacket()
-	standard_array = r.getStandardQueryPacket('koenveelenturf.nl')
-	print('standard_array:', standard_array)
-	print(r.header)
-	print(r.questions)	
-	print(r.parseResponse(standard_array))
+# 	print('Koen\'s test')
+# 	r = DNSPacket()
+# 	standard_array = r.getStandardQueryPacket('koenveelenturf.nl')
+# 	print('standard_array:', standard_array)
+# 	print(r.header)
+# 	print(r.questions)	
+# 	print(r.parseResponse(standard_array))
 		
 if __name__ == '__main__':
 	main()
