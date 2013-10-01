@@ -216,10 +216,10 @@ class DNSPacket():
 		self.setHeaderTC(0) #Set to not-truncated for now
 		self.setHeaderRD(1) #Query will be copied in the response
 		self.setHeaderZ(0) #Must be zero in all queries and responses
+		self.setHeaderQDCOUNT(1)
 		i = self.createQuestionSection()
 		self.addQuestionQNAME(domainname, i)
 		self.addQuestionQTYPE(1, i) #A, IPv4 address
-		self.addQuestionQTYPE(1, i) #IN, Internet
 		return self.data
 	
 	#Creates a new question section in the self.questions master list
