@@ -236,6 +236,7 @@ class DNSPacket():
 		i = self.createQuestionSection()
 		self.addQuestionQNAME(domainname, i)
 		self.addQuestionQTYPE(1, i) #A, IPv4 address
+		self.addQuestionQCLASS(1, i)
 	
 	#Creates a new question section in the self.questions master list
 	def createQuestionSection(self):
@@ -437,31 +438,31 @@ class DNSPacket():
 		self.__addRR16bit__(self.authorities, index, num)
 	
 	def addAuthorityTTL(self, num, index):
-		self.__addRR32bit__(self.answers, index, num)
+		self.__addRR32bit__(self.authorities, index, num)
 	
 	def addAuthorityRDLENGTH(self, num, index):
-		self.__addRR16bit__(self.answers, index, num)
+		self.__addRR16bit__(self.authorities, index, num)
 	
 	def addAuthorityRDATA(self, num, data_list):
-		self.__addRRRDATA__(self.answers, index, data_list)
+		self.__addRRRDATA__(self.authorities, index, data_list)
 
 	def addAdditionalNAME(self, domainname, index):
-		self.__addRRNAME__(self.authorities, index, domainname)
+		self.__addRRNAME__(self.additionals, index, domainname)
 	
 	def addAdditionalTYPE(self, num, index):
-		self.__addRR16bit__(self.authorities, index, num)
+		self.__addRR16bit__(self.additionals, index, num)
 	
 	def addAdditionalCLASS(self, num, index):
-		self.__addRR16bit__(self.authorities, index, num)
+		self.__addRR16bit__(self.additionals, index, num)
 	
 	def addAdditionalTTL(self, num, index):
-		self.__addRR32bit__(self.answers, index, num)
+		self.__addRR32bit__(self.additionals, index, num)
 	
 	def addAdditionalRDLENGTH(self, num, index):
-		self.__addRR16bit__(self.answers, index, num)
+		self.__addRR16bit__(self.additionals, index, num)
 	
 	def addAdditionalRDATA(self, num, data_list):
-		self.__addRRRDATA__(self.answers, index, data_list)
+		self.__addRRRDATA__(self.additionals, index, data_list)
 
 def main():
 	print("Class methods names of DNSPacket")
