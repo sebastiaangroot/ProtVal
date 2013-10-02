@@ -168,10 +168,14 @@ class DNSPacket():
 		while i < iteration_qdcount:
 			if i_test == 0 and iteration_qdcount == 1:
 				self.response_items['QNAME'] = []
+				self.response_items['QTYPE'] = []
+				self.response_items['QCLASS'] = []
 				#print ('test') 
 				i_test = 1
 			elif i_test == 0:
 				self.response_items['QNAME'] = [[]] *iteration_qdcount
+				self.response_items['QTYPE'] = [[]] *iteration_qdcount
+				self.response_items['QCLASS'] = [[]] *iteration_qdcount
 				i_test = 1
 			while x < iteration_octet:
 				#print('inside x<iteration_octet')
@@ -185,16 +189,23 @@ class DNSPacket():
 				self.response_items['QNAME'][i].append(self.temp_dict['domain_name_' + str(i) + str(z) +'part'])
 			x = 0
 			y += 1
-			#print('x is:', x, 'y is:', y, 'z is:', z)
+			print('x is:', x, 'y is:', y, 'z is:', z)
 			iteration_read_label += iteration_octet + 1
+			print('iteration read label', iteration_read_label)
 			iteration_octet = byte_array[iteration_read_label]
 			z += 1
 			if iteration_octet == 0:
+				if iteration_qdcount ==1:
+					self.response_items['QTYPE'].append(self.removeBin(bin(byte_array[y] +byte_array[y+1])))
+					self.response_items['QCLASS'].append(self.removeBin(bin(byte_array[y+2] +byte_array[y+3])))
+				else:
+					self.response_items['QTYPE'][i].append(self.removeBin(bin(byte_array[y] +byte_array[y+1])))
+					self.response_items['QCLASS'][i].append(self.removeBin(bin(byte_array[y+2] +byte_array[y+3])))
 				i += 1
 				z = 1
 				x = 0
-				y = iteration_read_label + 2
-				iteration_read_label += 2
+				y += 4
+				iteration_read_label = y
 				iteration_octet = byte_array[iteration_read_label]
 				print('y is:', y)
 		del self.temp_dict
