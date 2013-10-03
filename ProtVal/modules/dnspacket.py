@@ -1,4 +1,5 @@
 import socket
+import random
 
 class DNSPacket():
 	def __init__(self):
@@ -262,9 +263,21 @@ class DNSPacket():
 		self.addQuestionQCLASS(1, i)
 		
 	#Creates a standard query with the QR bit set to 1, returns the DNSPacket object
-	def getStandardQueryQRQueryPacket(self, domainname):
+	def getStandardQueryQRPacket(self, domainname):
 		self.getStandardQueryPacket(domainname)
 		self.setHeaderQR(1)
+
+	#Creates a standard query with the OPCODE bits set to a value 3-15 at random, returns the DNSPacket object
+	def getStandardQueryOPCODEPacket(self, domainname):
+		opcode = random.randrange(3,5)
+		self.getStandardQueryPacket(domainname)
+		self.setHeaderOPCODE(opcode)
+
+	#Creates a standard quer with the Z bits set to a value 1-7 at random, returns the DNSPacket object
+	def getStandardQueryZPacket(self, domainname):
+		zbits = random.randrange(1,7)
+		self.getStandardQueryPacket(domainname)
+		self.setHeaderZ(zbits)
 	
 	#Creates a new question section in the self.questions master list
 	def createQuestionSection(self):
