@@ -234,9 +234,7 @@ class DNSPacket():
 		return self.data
 		
 	#Creates a standard query, returns the DNSPacket object
-	def getStandardQueryPacket(self, domainname):
-		buffer_size = 1024
-		
+	def getStandardQueryPacket(self, domainname):		
 		self.setHeaderID(0b10011001)
 		self.setHeaderQR(0)
 		self.setHeaderOPCODE(0)
@@ -248,6 +246,25 @@ class DNSPacket():
 		self.addQuestionQNAME(domainname, i)
 		self.addQuestionQTYPE(1, i) #A, IPv4 address
 		self.addQuestionQCLASS(1, i)
+	
+	#Creates a inverse query, returns the DNSPacket object	
+	def getInverseQueryPacket(self, domainname):
+		self.setHeaderID(0b10011001)
+		self.setHeaderQR(0)
+		self.setHeaderOPCODE(1) # IQUERY
+		self.setHeaderTC(0)
+		self.setHeaderRD(1) # Query will be copied in the response
+		self.setHeaderZ(0) # Must be zero in all queries and responses
+		self.setHeaderQDCOUNT(1)
+		i = self.createQuestionSection()
+		self.addQuestionQNAME(domainname, i)
+		self.addQuestionQTYPE(1, i)
+		self.addQuestionQCLASS(1, i)
+		
+	#Creates a standard query with the QR bit set to 1, returns the DNSPacket object
+	def getStandardQueryQRQueryPacket(self, domainname):
+		self.getStandardQueryPacket(domainname)
+		self.setHeaderQR(1)
 	
 	#Creates a new question section in the self.questions master list
 	def createQuestionSection(self):
