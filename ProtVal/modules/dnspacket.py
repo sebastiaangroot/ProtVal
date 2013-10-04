@@ -110,20 +110,26 @@ class DNSPacket():
 			packet = packet + bytes(additional)
 		return packet
 	
-	def removeBin(self, value):
-		if len(value) > 2:
-			value_stripped = value[2:]
-			return_value = '0' * (8-len(value[2:])) + value_stripped
-			print('debug', return_value)
-			return return_value
-		elif len(value) <= 2:
-			return_value = '0' * 8
-			print('debug', return_value)
-			return '0' * 8
-		elif len(value) == 10:
-			return_value = value[2:]
-			print('debug', return_value)
-			return return_value
+	def removeBin(self, *value):
+		value_new = []
+		for iterate in value:
+			if len(iterate) > 2:
+				iterate_stripped = iterate[2:]
+				return_iterate = '0' * (8-len(iterate[2:])) + iterate_stripped
+				print('debug', return_iterate)
+				value_new.append(return_iterate)
+			elif len(iterate) <= 2:
+				return_iterate = '0' * 8
+				print('debug', return_iterate)
+				value_new.append('0' * 8)
+			elif len(iterate) == 10:
+				return_iterate = iterate[2:]
+				print('debug', return_iterate)
+				value_new.append(return_iterate)
+		value_return = ''
+		for i in value_new:
+			value_return += i
+		return value_return
 		
 	
 	def parseResponse(self, byte_array):
@@ -131,7 +137,7 @@ class DNSPacket():
 		print("Inside parseResponse") #for debugging purposes
 		print("Printing byte_array:", byte_array)
 		#print("test:", byte_array[1])
-		self.response_items['ID'] = self.removeBin(bin(byte_array[0] +byte_array[1]))
+		self.response_items['ID'] = self.removeBin(bin(byte_array[0]), bin(byte_array[1]))
 		#print(self.response_items['ID'])
 		#print('test byte_array', bin(byte_array[1]))
 		
@@ -151,13 +157,13 @@ class DNSPacket():
 		self.response_items['Z'] = bin_header[1:4]
 		self.response_items['RCODE'] = bin_header[4:]
 		
-		self.response_items['QDCOUNT'] = self.removeBin(bin(byte_array[4] +byte_array[5]))
-		self.response_items['ANCOUNT'] = self.removeBin(bin(byte_array[6] +byte_array[7]))
-		self.response_items['NSCOUNT'] = self.removeBin(bin(byte_array[8] +byte_array[9]))
-		self.response_items['ARCOUNT'] = self.removeBin(bin(byte_array[10] +byte_array[11]))
+		self.response_items['QDCOUNT'] = self.removeBin(bin(byte_array[4]), bin(byte_array[5]))
+		self.response_items['ANCOUNT'] = self.removeBin(bin(byte_array[6]), bin(byte_array[7]))
+		self.response_items['NSCOUNT'] = self.removeBin(bin(byte_array[8]), bin(byte_array[9]))
+		self.response_items['ARCOUNT'] = self.removeBin(bin(byte_array[10]), bin(byte_array[11]))
 		
 		iteration_read_label = 12
-		iteration_qdcount = byte_array[4] +byte_array[5]
+		iteration_qdcount = int(self.removeBin(bin(byte_array[4]), bin(byte_array[5])), 2)
 		iteration_octet = byte_array[12]
 		i = 0
 		x = 0
@@ -197,11 +203,11 @@ class DNSPacket():
 			z += 1
 			if iteration_octet == 0:
 				if iteration_qdcount ==1:
-					self.response_items['QTYPE'].append(self.removeBin(bin(byte_array[y] +byte_array[y+1])))
-					self.response_items['QCLASS'].append(self.removeBin(bin(byte_array[y+2] +byte_array[y+3])))
+					self.response_items['QTYPE'].append(self.removeBin(bin(byte_array[y]), bin(byte_array[y+1])))
+					self.response_items['QCLASS'].append(self.removeBin(bin(byte_array[y+2]), bin(byte_array[y+3])))
 				else:
-					self.response_items['QTYPE'][i].append(self.removeBin(bin(byte_array[y] +byte_array[y+1])))
-					self.response_items['QCLASS'][i].append(self.removeBin(bin(byte_array[y+2] +byte_array[y+3])))
+					self.response_items['QTYPE'][i].append(self.removeBin(bin(byte_array[y]), bin(byte_array[y+1])))
+					self.response_items['QCLASS'][i].append(self.removeBin(bin(byte_array[y+2]), bin(byte_array[y+3])))
 				i += 1
 				z = 1
 				x = 0
@@ -209,8 +215,10 @@ class DNSPacket():
 				iteration_read_label = y
 				iteration_octet = byte_array[iteration_read_label]
 				print('y is:', y)
-		del self.temp_dict
+		
 		iterable = y
+		
+		del self.temp_dict, iteration_read_label, iteration_qdcount, iteration_octet, i, x, y, z, i_test
 		
 		print('iterable:', iterable)
 		
