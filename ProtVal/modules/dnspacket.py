@@ -1,6 +1,7 @@
 import socket
 import random
 
+
 class DNSPacket():
 	def __init__(self):
 		self.header = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] #Enough room for the 12-byte header
@@ -217,10 +218,92 @@ class DNSPacket():
 				print('y is:', y)
 		
 		iterable = y
-		
 		del self.temp_dict, iteration_read_label, iteration_qdcount, iteration_octet, i, x, y, z, i_test
 		
+		ancount_entries = int(self.response_items['ANCOUNT'], 2)
+		nscount_entries = int(self.response_items['NSCOUNT'], 2)
+		arcount_entries = int(self.response_items['ARCOUNT'], 2)
+		print('test', ancount_entries, nscount_entries, arcount_entries)
+		entries = ancount_entries + nscount_entries + arcount_entries
+		print('test:', entries) 
+		
+		if entries == 1:
+			self.response_items['RR'] = {}
+			self.response_items['RR'] = {}
+		else:
+			#self.response_items['RR'] = [{}] * entries werkt dus niet, zet een item in alle dicts
+			self.response_items['RR'] = []
+			i = 0
+			while i < entries:
+				self.response_items['RR'].append({})
+				i += 1
+		
+		i = 0
+		name_start = iterable
+		reference = 0
+		iteration_reference_loop = 0
+		self.temp_dict = {}
+		z= 0
+		y = 0 #hoeveelste domeinnaam
+		t = 0
+		iteration_sub = 0 #hoeveelste sub-domeinnaam
+		name_dict = str()
+		name_count = 0
+		iteration_reference = 0
+		iter_loop = 0
+		
+		
+		while i < 1:
+			if name_count < (entries - arcount_entries - nscount_entries):
+				name_dict = 'ANCOUNT_ANSWER'
+				
+			elif name_count < (entries - arcount_entries - ancount_entries):
+				name_dict = 'NSCOUNT_ANSWER'
+				
+			elif name_count < (entries - nscount_entries - ancount_entries):
+				name_dict = 'ARCOUNT_ANSWER'
+			else:
+				name_dict = 'ERROR'
+			if byte_array[name_start] & 0b11000000 == 0b11000000:
+				print('True')
+				reference = int(self.removeBin(bin(byte_array[name_start]), bin(byte_array[name_start+1]))[2:], 2)
+				iteration_sub = 2 #int(self.removeBin(bin(byte_array[name_start+2]), bin(byte_array[name_start+3])), 2)
+				iteration_reference = byte_array[reference]
+				iter_loop = reference+1
+				print('iter_loop', iter_loop)
+				while t < iteration_sub:
+					print('inside sub')
+					print('iter', iteration_reference_loop, iteration_reference, iter_loop, reference)
+					while iteration_reference_loop < iteration_reference:
+						self.temp_dict['domain_name_' + str(t) +'part'] = self.temp_dict.setdefault('domain_name_' + str(t) +'part', '') + chr(byte_array[iter_loop])
+						iter_loop += 1
+						iteration_reference_loop += 1
+					if entries == 1:
+						self.response_items['RR']['NAME'] = self.response_items['RR'].get('NAME', '') + self.temp_dict['domain_name_' + str(t) +'part'] + '.'
+					else:
+						print('else')
+						self.response_items['RR'][i]['NAME'] = self.response_items['RR'][i].get('NAME', '') + self.temp_dict['domain_name_' + str(t) +'part'] + '.'
+					t += 1
+					name_count += 1
+					reference = reference + iteration_reference + 1
+					iteration_reference= byte_array[reference]
+					iter_loop = reference+1
+					iteration_reference_loop = 0
+					
+				if entries == 1:
+					self.response_items['RR']['TYPE'] = self.response_items['RR'].get('TYPE', '') + name_dict  
+				else:
+					print('else')
+					self.response_items['RR'][i]['TYPE'] = self.response_items['RR'][i].get('TYPE', '') + name_dict
+				i += 1
+				
+			else:
+				print('False')
+				
+				
+				
 		print('iterable:', iterable)
+		print('temp_dict', self.temp_dict)
 		
 		print(self.response_items)
 		return(self.response_items)
@@ -522,6 +605,11 @@ def main():
 	byte_array = q.testResponse()
 	q.parseResponse(byte_array)
 	
+# 	iter = 0
+# 	for i in byte_array:
+# 		print(i, iter)
+# 		iter += 1
+# 	
 # 	print('Koen\'s test')
 # 	r = DNSPacket()
 # 	standard_array = r.getStandardQueryPacket('koenveelenturf.nl')
