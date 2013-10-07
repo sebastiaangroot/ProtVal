@@ -246,7 +246,6 @@ class DNSPacket():
 		z= 0
 		y = 0 #hoeveelste domeinnaam
 		t = 0
-		iteration_sub = 0 #hoeveelste sub-domeinnaam
 		name_dict = str()
 		name_count = 0
 		iteration_reference = 0
@@ -267,35 +266,56 @@ class DNSPacket():
 			if byte_array[name_start] & 0b11000000 == 0b11000000:
 				print('True')
 				reference = int(self.removeBin(bin(byte_array[name_start]), bin(byte_array[name_start+1]))[2:], 2)
-				iteration_sub = 2 #int(self.removeBin(bin(byte_array[name_start+2]), bin(byte_array[name_start+3])), 2)
 				iteration_reference = byte_array[reference]
 				iter_loop = reference+1
 				print('iter_loop', iter_loop)
-				while t < iteration_sub:
+				
+				while iteration_reference_loop < iteration_reference:
 					print('inside sub')
 					print('iter', iteration_reference_loop, iteration_reference, iter_loop, reference)
-					while iteration_reference_loop < iteration_reference:
-						self.temp_dict['domain_name_' + str(t) +'part'] = self.temp_dict.setdefault('domain_name_' + str(t) +'part', '') + chr(byte_array[iter_loop])
-						iter_loop += 1
-						iteration_reference_loop += 1
-					if entries == 1:
-						self.response_items['RR']['NAME'] = self.response_items['RR'].get('NAME', '') + self.temp_dict['domain_name_' + str(t) +'part'] + '.'
-					else:
-						print('else')
-						self.response_items['RR'][i]['NAME'] = self.response_items['RR'][i].get('NAME', '') + self.temp_dict['domain_name_' + str(t) +'part'] + '.'
-					t += 1
-					name_count += 1
-					reference = reference + iteration_reference + 1
-					iteration_reference= byte_array[reference]
-					iter_loop = reference+1
-					iteration_reference_loop = 0
 					
+					self.temp_dict['domain_name_' + str(t) +'part'] = self.temp_dict.setdefault('domain_name_' + str(t) +'part', '') + chr(byte_array[iter_loop])
+					iter_loop += 1
+					iteration_reference_loop += 1
 				if entries == 1:
-					self.response_items['RR']['TYPE'] = self.response_items['RR'].get('TYPE', '') + name_dict  
+					self.response_items['RR']['NAME'] = self.response_items['RR'].get('NAME', '') + self.temp_dict['domain_name_' + str(t) +'part'] + '.'
+				else:
+					print('else')	
+					self.response_items['RR'][i]['NAME'] = self.response_items['RR'][i].get('NAME', '') + self.temp_dict['domain_name_' + str(t) +'part'] + '.'
+				t += 1
+				
+				reference = reference + iteration_reference + 1
+				iteration_reference= byte_array[reference]
+				iter_loop = reference+1
+				iteration_reference_loop = 0
+				if iteration_reference == 0:
+					break
+				
+				name_count += 1	
+				if entries == 1:
+					self.response_items['RR']['RR_TYPE'] = self.response_items['RR'].get('RR_TYPE', '') + name_dict  
 				else:
 					print('else')
-					self.response_items['RR'][i]['TYPE'] = self.response_items['RR'][i].get('TYPE', '') + name_dict
+					self.response_items['RR'][i]['RR_TYPE'] = self.response_items['RR'][i].get('RR_TYPE', '') + name_dict
+				
+				name_start += 2
+				print(name_start)
+				if entries == 1:
+					self.response_items['RR']['TYPE'] = self.response_items['RR'].get('TYPE', '') + self.removeBin(bin(byte_array[name_start]), bin(byte_array[name_start+1]))
+					self.response_items['RR']['CLASS'] = self.response_items['RR'].get('CLASS', '') + self.removeBin(bin(byte_array[name_start+2]), bin(byte_array[name_start+3]))
+					self.response_items['RR']['TTL'] = self.response_items['RR'].get('TTL', 0) + int(self.removeBin(bin(byte_array[name_start+4]), bin(byte_array[name_start+5]), bin(byte_array[name_start+6]), bin(byte_array[name_start+7])), 2)
+					self.response_items['RR']['RDLENGTH'] = self.response_items['RR'].get('RDLENGTH', 0) + int(self.removeBin(bin(byte_array[name_start+8]), bin(byte_array[name_start+9])),2)
+					self.response_items['RR']['RDATA'] = self.response_items['RR'].get('RDATA', '') + name_dict    
+				else:
+					print('else')
+					self.response_items['RR'][i]['TYPE'] = self.response_items['RR'][i].get('TYPE', '') + self.removeBin(bin(byte_array[name_start]), bin(byte_array[name_start+1]))
+					self.response_items['RR'][i]['CLASS'] = self.response_items['RR'][i].get('CLASS', '') + self.removeBin(bin(byte_array[name_start+2]), bin(byte_array[name_start+3]))
+					self.response_items['RR'][i]['TTL'] = self.response_items['RR'][i].get('TTL', 0) + int(self.removeBin(bin(byte_array[name_start+4]), bin(byte_array[name_start+5]), bin(byte_array[name_start+6]), bin(byte_array[name_start+7])), 2)
+					self.response_items['RR'][i]['RDLENGTH'] = self.response_items['RR'][i].get('RDLENGTH', 0) + int(self.removeBin(bin(byte_array[name_start+8]), bin(byte_array[name_start+9])),2)
+					self.response_items['RR'][i]['RDATA'] = self.response_items['RR'][i].get('RDATA', '') + name_dict  
 				i += 1
+				print(self.removeBin(bin(byte_array[name_start+7]), bin(byte_array[name_start+8])))
+				print(name_start+7, name_start+8)
 				
 			else:
 				print('False')
