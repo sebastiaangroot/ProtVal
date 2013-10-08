@@ -250,9 +250,10 @@ class DNSPacket():
 		name_count = 0
 		iteration_reference = 0
 		iter_loop = 0
+		self.temp_dict_rdata = {}
 		
 		
-		while i < 1:
+		while i < entries:
 			if name_count < (entries - arcount_entries - nscount_entries):
 				name_dict = 'ANCOUNT_ANSWER'
 				
@@ -305,20 +306,43 @@ class DNSPacket():
 					self.response_items['RR']['CLASS'] = self.response_items['RR'].get('CLASS', '') + self.removeBin(bin(byte_array[name_start+2]), bin(byte_array[name_start+3]))
 					self.response_items['RR']['TTL'] = self.response_items['RR'].get('TTL', 0) + int(self.removeBin(bin(byte_array[name_start+4]), bin(byte_array[name_start+5]), bin(byte_array[name_start+6]), bin(byte_array[name_start+7])), 2)
 					self.response_items['RR']['RDLENGTH'] = self.response_items['RR'].get('RDLENGTH', 0) + int(self.removeBin(bin(byte_array[name_start+8]), bin(byte_array[name_start+9])),2)
-					self.response_items['RR']['RDATA'] = self.response_items['RR'].get('RDATA', '') + name_dict    
+					name_start += 10
+					iter_loop_rdata = 0
+					if byte_array[name_start] & 0b11000000 != 0b11000000:
+						while iter_loop_rdata < self.response_items['RR'][i]['RDLENGTH']:
+							self.temp_dict_rdata['rdata'] = self.temp_dict_rdata.setdefault('rdata', '') + str(byte_array[name_start])
+							iter_loop_rdata += 1
+							name_start += 1
+						self.response_items['RR']['RDATA'] = self.temp_dict_rdata['rdata']
+					else:
+						self.response_items['RR']['RDATA'] = int(self.removeBin(bin(byte_array[name_start]), bin(byte_array[name_start+1])))
+						name_start += 2
 				else:
 					print('else')
 					self.response_items['RR'][i]['TYPE'] = self.response_items['RR'][i].get('TYPE', '') + self.removeBin(bin(byte_array[name_start]), bin(byte_array[name_start+1]))
 					self.response_items['RR'][i]['CLASS'] = self.response_items['RR'][i].get('CLASS', '') + self.removeBin(bin(byte_array[name_start+2]), bin(byte_array[name_start+3]))
 					self.response_items['RR'][i]['TTL'] = self.response_items['RR'][i].get('TTL', 0) + int(self.removeBin(bin(byte_array[name_start+4]), bin(byte_array[name_start+5]), bin(byte_array[name_start+6]), bin(byte_array[name_start+7])), 2)
 					self.response_items['RR'][i]['RDLENGTH'] = self.response_items['RR'][i].get('RDLENGTH', 0) + int(self.removeBin(bin(byte_array[name_start+8]), bin(byte_array[name_start+9])),2)
-					self.response_items['RR'][i]['RDATA'] = self.response_items['RR'][i].get('RDATA', '') + name_dict  
+					name_start += 10
+					iter_loop_rdata = 0
+					if byte_array[name_start] & 0b11000000 != 0b11000000:
+						while iter_loop_rdata < self.response_items['RR'][i]['RDLENGTH']:
+							self.temp_dict_rdata['RDATA'] = self.temp_dict_rdata.setdefault('RDATA', '') + str(byte_array[name_start])
+							iter_loop_rdata += 1
+							name_start += 1
+						self.response_items['RR'][i]['RDATA'] = self.temp_dict_rdata['RDATA']
+					else:
+						self.response_items['RR']['RDATA'] = int(self.removeBin(bin(byte_array[name_start]), bin(byte_array[name_start+1])))
+						name_start += 2
+				print(name_start)
 				i += 1
-				print(self.removeBin(bin(byte_array[name_start+7]), bin(byte_array[name_start+8])))
-				print(name_start+7, name_start+8)
-				
+				print(name_start)
+				self.temp_dict = {}
+				print(entries)
 			else:
 				print('False')
+				raise Exception
+		
 				
 				
 				
