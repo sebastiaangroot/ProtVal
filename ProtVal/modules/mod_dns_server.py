@@ -1,3 +1,9 @@
+def report(message, success):
+	if success:
+		print(message + '(OK)')
+	else:
+		print(message + '(ERROR)')
+
 def verbosePrint(message, verbose, end='\n'):
 	if not verbose:
 		return
@@ -22,7 +28,7 @@ def testStandardQuery(domainname, address, verbose):
 	p_query = getStandardQueryPacket()
 	response = sendMessage(p_query, address)
 	p_response = parseDNSPacket(response)
-	
+
 	verbosePrint(p_response.getPacketBytes(), verbose)
 
 	#ID
@@ -89,4 +95,61 @@ def getModuleDescription():
 	return "A module to test your DNS server against the RFC"
 
 def initMod():
-	pass
+	print('The following tests are available:')
+	print('1. Standard Query validation')
+	print('2. Inverse Query validation')
+	print('3. Server status request availability test')
+	print('4. Recursion availability test')
+	print('5. QR bit error handling')
+	print('6. OPCODE error handling')
+	print('7. Z field error handling')
+	print('8. Run all tests')
+	choice = 0
+	while True:
+		answer = input('Please enter a test to run [1 - 8]: ')
+		try:
+			int(answer)
+		except ValueError:
+			continue
+		else:
+			choice = int(answer)
+			if choice >= 1 or choice <= 8:
+				break
+			choice = 0
+	
+	if choice == 1:
+		testStandardQuery('test.iamotor.nl', ('85.12.6.41', 53), True)
+	elif choice == 2:
+		testInverseQuery('85.12.6.41', ('85.12.6.41', 53), True)
+	elif choice == 3:
+		testServerStatusRequest(('85.12.6.41', 53), True)
+	elif choice == 4:
+		testRecursionAvailable('test.iamotor.nl', ('85.12.6.41', 53), True)
+	elif choice == 5:
+		testQRHandling('test.iamotor.nl', ('85.12.6.41', 53), True)
+	elif choice == 6:
+		testOPCODEHandling('test.iamotor.nl', ('85.12.6.41', 53), True)
+	elif choice == 7:
+		testZHandling('test.iamotor.nl', ('85.12.6.41', 53), True)
+	elif choice == 8:
+		result = testStandardQuery('test.iamotor.nl', ('85.12.6.41', 53), False)
+		report('Standard Query:\t\t\t', result)
+
+		result = testInverseQuery('85.12.6.41', ('85.12.6.41', 53), False)
+		report('Inverse Query:\t\t\t', result)
+
+		result = testServerStatusRequest(('85.12.6.41', 53), False)
+		report('Server status request:\t', result)
+
+		result = testRecursionAvailable('test.iamotor.nl', ('85.12.6.41', 53), False)
+		report('Recursion available:\t\t', result)
+
+		result = testQRHandling('test.iamotor.nl', ('85.12.6.41', 53), False)
+		report('QR bit Error handling:\t', result)
+
+		result = testOPCODEHandling('test.iamotor.nl', ('85.12.6.41', 53), False)
+		report('OPCODE Error handling:\t', result)
+
+		result = testZHandling('test.iamotor.nl', ('85.12.6.41', 53), False)
+		report('Z Field error handling:\t', result)
+				
