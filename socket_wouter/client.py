@@ -13,6 +13,7 @@ def create_connection(port, buffersize):
         message = "Test {0}".format(i)
         clientsocket.send(message.encode())
         received = clientsocket.recv(buffersize)
+        clientsocket.send
         print(received.decode())
         i = i + 1
     
