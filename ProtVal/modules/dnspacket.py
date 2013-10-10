@@ -257,10 +257,10 @@ class DNSPacket():
 			if name_count < (entries - arcount_entries - nscount_entries):
 				name_dict = 'ANCOUNT_ANSWER'
 				
-			elif name_count < (entries - arcount_entries - ancount_entries):
+			elif name_count < (entries - arcount_entries):
 				name_dict = 'NSCOUNT_ANSWER'
 				
-			elif name_count < (entries - nscount_entries - ancount_entries):
+			elif name_count < (entries):
 				name_dict = 'ARCOUNT_ANSWER'
 			else:
 				name_dict = 'ERROR'
@@ -292,7 +292,7 @@ class DNSPacket():
 				if iteration_reference == 0:
 					break
 				
-				name_count += 1	
+				
 				if entries == 1:
 					self.response_items['RR']['RR_TYPE'] = self.response_items['RR'].get('RR_TYPE', '') + name_dict  
 				else:
@@ -335,6 +335,7 @@ class DNSPacket():
 						self.response_items['RR']['RDATA'] = int(self.removeBin(bin(byte_array[name_start]), bin(byte_array[name_start+1])))
 						name_start += 2
 				print(name_start)
+				name_count += 1	
 				i += 1
 				print(name_start)
 				self.temp_dict = {}
