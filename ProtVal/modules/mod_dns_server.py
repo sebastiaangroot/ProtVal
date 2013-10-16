@@ -99,8 +99,6 @@ def testStandardQuery(domainname, address, verbose):
 	response = sendMessage(packet.getPacketBytes(), address)
 	p_response = packet.parseResponse(response)
 
-	verbosePrint(p_response.getPacketBytes(), verbose)
-
 	#ID
 	num = int(p_response['ID'], 2)
 	verbosePrint('Header ID: %s ' % p_response['ID'], verbose, end='')

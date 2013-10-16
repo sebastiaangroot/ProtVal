@@ -135,16 +135,10 @@ class DNSPacket():
 	
 	def parseResponse(self, byte_array):
 		
-		print("Inside parseResponse") #for debugging purposes
-		print("Printing byte_array:", byte_array)
-		#print("test:", byte_array[1])
 		self.response_items['ID'] = self.removeBin(bin(byte_array[0]), bin(byte_array[1]))
-		#print(self.response_items['ID'])
-		#print('test byte_array', bin(byte_array[1]))
 		
 		list_header = ['QR', 'OPCODE', 'AA', 'TC', 'RD']
 		bin_header = self.removeBin(bin(byte_array[2]))
-		#print(bin_header)
 		self.response_items[list_header[0]] = bin_header[0]
 		self.response_items[list_header[1]] = bin_header[1:5]
 		i = 5
@@ -152,8 +146,6 @@ class DNSPacket():
 			self.response_items[list_header[i-3]] = bin_header[i]
 			i += 1
 		bin_header = self.removeBin(bin(byte_array[3]))
-		#print('bin_header', bin_header)
-		#print('testen', byte_array[3])
 		self.response_items['RA'] = bin_header[0]
 		self.response_items['Z'] = bin_header[1:4]
 		self.response_items['RCODE'] = bin_header[4:]
@@ -180,17 +172,13 @@ class DNSPacket():
 				self.response_items['QCLASS'] = [[]] *iteration_qdcount
 				i_test = 1
 			while x < iteration_octet:
-				#print('inside x<iteration_octet')
 				self.temp_dict['domain_name_' + str(i) + str(z) +'part'] = self.temp_dict.setdefault('domain_name_' + str(i) + str(z) +'part', '') + chr(byte_array[y])
-				#print(chr(byte_array[y]))
 				x += 1
 				y+=1
 			self.response_items['QNAME'][i].append(self.temp_dict['domain_name_' + str(i) + str(z) +'part'])
 			x = 0
 			y += 1
-			print('x is:', x, 'y is:', y, 'z is:', z)
 			iteration_read_label += iteration_octet + 1
-			print('iteration read label', iteration_read_label)
 			iteration_octet = byte_array[iteration_read_label]
 			z += 1
 			if iteration_octet == 0:
@@ -202,20 +190,14 @@ class DNSPacket():
 				y += 4
 				iteration_read_label = y
 				iteration_octet = byte_array[iteration_read_label]
-				print('y is:', y)
-		
 		iterable = y
 		del self.temp_dict, iteration_read_label, iteration_qdcount, iteration_octet, i, x, y, z, i_test
 		
 		ancount_entries = int(self.response_items['ANCOUNT'], 2)
 		nscount_entries = int(self.response_items['NSCOUNT'], 2)
 		arcount_entries = int(self.response_items['ARCOUNT'], 2)
-		print('test', ancount_entries, nscount_entries, arcount_entries)
 		entries = ancount_entries + nscount_entries + arcount_entries
-		print('test:', entries) 
 		
-
-		#self.response_items['RR'] = [{}] * entries werkt dus niet, zet een item in alle dicts
 		self.response_items['RR'] = []
 		i = 0
 		while i < entries:
@@ -249,16 +231,11 @@ class DNSPacket():
 			else:
 				name_dict = 'ERROR'
 			if byte_array[name_start] & 0b11000000 == 0b11000000:
-				print('True')
 				reference = int(self.removeBin(bin(byte_array[name_start]), bin(byte_array[name_start+1]))[2:], 2)
 				iteration_reference = byte_array[reference]
 				iter_loop = reference+1
-				print('iter_loop', iter_loop)
 				
-				while iteration_reference_loop < iteration_reference:
-					print('inside sub')
-					print('iter', iteration_reference_loop, iteration_reference, iter_loop, reference)
-					
+				while iteration_reference_loop < iteration_reference:					
 					self.temp_dict['domain_name_' + str(t) +'part'] = self.temp_dict.setdefault('domain_name_' + str(t) +'part', '') + chr(byte_array[iter_loop])
 					iter_loop += 1
 					iteration_reference_loop += 1
@@ -278,7 +255,6 @@ class DNSPacket():
 				self.response_items['RR'][i]['RR_TYPE'] = self.response_items['RR'][i].get('RR_TYPE', '') + name_dict
 				
 				name_start += 2
-				print(name_start)
 
 				self.response_items['RR'][i]['TYPE'] = self.response_items['RR'][i].get('TYPE', '') + self.removeBin(bin(byte_array[name_start]), bin(byte_array[name_start+1]))
 				self.response_items['RR'][i]['CLASS'] = self.response_items['RR'][i].get('CLASS', '') + self.removeBin(bin(byte_array[name_start+2]), bin(byte_array[name_start+3]))
@@ -295,23 +271,12 @@ class DNSPacket():
 				else:
 					self.response_items['RR'][i]['RDATA'] = int(self.removeBin(bin(byte_array[name_start]), bin(byte_array[name_start+1])))
 					name_start += 2
-				print(name_start)
 				name_count += 1	
 				i += 1
-				print(name_start)
 				self.temp_dict = {}
-				print(entries)
 			else:
-				print('False')
 				raise Exception
 		
-				
-				
-				
-		print('iterable:', iterable)
-		print('temp_dict', self.temp_dict)
-		
-		print(self.response_items)
 		return(self.response_items)
 		
 	def testResponse(self):
