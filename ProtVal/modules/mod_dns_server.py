@@ -161,4 +161,4 @@ def testStandardQuery(domainname, address, verbose):
 	if not testValue(num, 0, verbose):
 		success = False
 
-	return success
+	return (success, p_response)
