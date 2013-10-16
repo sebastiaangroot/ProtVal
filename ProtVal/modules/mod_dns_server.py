@@ -97,7 +97,7 @@ def testStandardQuery(domainname, address, verbose):
 	packet = dnspacket.DNSPacket()
 	packet.getStandardQueryPacket(domainname)
 	response = sendMessage(packet.getPacketBytes(), address)
-	p_response = packet.parseDNSPacket(response)
+	p_response = packet.parseResponse(response)
 
 	verbosePrint(p_response.getPacketBytes(), verbose)
 
