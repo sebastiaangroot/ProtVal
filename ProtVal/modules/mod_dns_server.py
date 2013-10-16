@@ -204,7 +204,7 @@ def testStandardQuery(domainname, address, verbose):
 			verbosePrint('NAME: ', verbose, end='')
 			for j, label in enumerate(record['NAME']):
 				verbosePrint(label, verbose, end='')
-				if j < len(record['NAME']):
+				if j < len(record['NAME']) - 1:
 					verbosePrint('.', verbose, end='')
 				else:
 					verbosePrint('', verbose)
@@ -222,7 +222,7 @@ def testStandardQuery(domainname, address, verbose):
 			verbosePrint('NAME: ', verbose, end='')
 			for j, label in enumerate(record['NAME']):
 				verbosePrint(label, verbose, end='')
-				if j < len(record['NAME']):
+				if j < len(record['NAME']) - 1:
 					verbosePrint('.', verbose, end='')
 				else:
 					verbosePrint('', verbose)
@@ -240,7 +240,7 @@ def testStandardQuery(domainname, address, verbose):
 			verbosePrint('NAME: ', verbose, end='')
 			for j, label in enumerate(record['NAME']):
 				verbosePrint(label, verbose, end='')
-				if j < len(record['NAME']):
+				if j < len(record['NAME']) - 1:
 					verbosePrint('.', verbose, end='')
 				else:
 					verbosePrint('', verbose)
