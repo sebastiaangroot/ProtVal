@@ -172,7 +172,7 @@ def testStandardQuery(domainname, address, verbose):
 	#QDCOUNT
 	num = int(p_response['QDCOUNT'], 2)
 	verbosePrint('QDCOUNT: %s' % p_response['QDCOUNT'], verbose, end='')
-	if not testValue(num, (packet.header[4] << 8) + packet.header[5], verbose)
+	if not testValue(num, (packet.header[4] << 8) + packet.header[5], verbose):
 		success = False
 	
 	#ANCOUNT
