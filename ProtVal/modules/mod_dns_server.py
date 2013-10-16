@@ -34,48 +34,48 @@ def initMod():
 		dn = input('Enter a domainname to query: ')
 		dest_ip = input('Enter the IP address of the DNS server: ')
 		dest_port = input('Enter the port to contact the DNS server on (53 is default): ')
-		if dest_port = '':
+		if dest_port == '':
 			dest_port = 53
 		testStandardQuery(dn, (dest_ip, int(dest_port)), True)
 	elif choice == 2:
 		q_ip = input('Enter an IP address to inverse query: ')
 		dest_ip = input('Enter the IP address of the DNS server: ')
 		dest_port = input('Enter the port to contact the DNS server on (53 is default): ')
-		if dest_port = '':
+		if dest_port == '':
 			dest_port = 53
 		testInverseQuery(q_ip, (dest_ip, int(dest_port)), True)
 	elif choice == 3:
 		dest_ip = input('Enter the IP address of the DNS server: ')
 		dest_port = input('Enter the port to contact the DNS server on (53 is default): ')
-		if dest_port = '':
+		if dest_port == '':
 			dest_port = 53
 		testServerStatusRequest((dest_ip, int(dest_port)), True)
 	elif choice == 4:
 		dn = input('Enter a domainname to query: ')
 		dest_ip = input('Enter the IP address of the DNS server: ')
 		dest_port = input('Enter the port to contact the DNS server on (53 is default): ')
-		if dest_port = '':
+		if dest_port == '':
 			dest_port = 53
 		testRecursionAvailable(dn, (dest_ip, dest_port), True)
 	elif choice == 5:
 		dn = input('Enter a domainname to query: ')
 		dest_ip = input('Enter the IP address of the DNS server: ')
 		dest_port = input('Enter the port to contact the DNS server on (53 is default): ')
-		if dest_port = '':
+		if dest_port == '':
 			dest_port = 53
 		testQRHandling(dn, (dest_ip, dest_port), True)
 	elif choice == 6:
 		dn = input('Enter a domainname to query: ')
 		dest_ip = input('Enter the IP address of the DNS server: ')
 		dest_port = input('Enter the port to contact the DNS server on (53 is default): ')
-		if dest_port = '':
+		if dest_port == '':
 			dest_port = 53
 		testOPCODEHandling(dn, (dest_ip, dest_port), True)
 	elif choice == 7:
 		dn = input('Enter a domainname to query: ')
 		dest_ip = input('Enter the IP address of the DNS server: ')
 		dest_port = input('Enter the port to contact the DNS server on (53 is default): ')
-		if dest_port = '':
+		if dest_port == '':
 			dest_port = 53
 		testZHandling(dn, (dest_ip, dest_port), True)
 	elif choice == 8:
@@ -83,7 +83,7 @@ def initMod():
 		q_ip = input('Enter an IP address to inverse query: ')
 		dest_ip = input('Enter the IP address of the DNS server: ')
 		dest_port = input('Enter the port to contact the DNS server on (53 is default): ')
-		if dest_port = '':
+		if dest_port == '':
 			dest_port = 53
 		result = testStandardQuery(dn, (dest_ip, int(dest_port)), False)
 		report('Standard Query:\t\t\t', result)
