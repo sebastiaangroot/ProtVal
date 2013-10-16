@@ -151,6 +151,9 @@ class DNSPacket():
 		self.response_items['ANCOUNT'] = self.removeBin(bin(byte_array[6]), bin(byte_array[7]))
 		self.response_items['NSCOUNT'] = self.removeBin(bin(byte_array[8]), bin(byte_array[9]))
 		self.response_items['ARCOUNT'] = self.removeBin(bin(byte_array[10]), bin(byte_array[11]))
+
+		if len(byte_array) <= 12:
+			return self.response_items
 		
 		iteration_read_label = 12
 		iteration_qdcount = int(self.removeBin(bin(byte_array[4]), bin(byte_array[5])), 2)
