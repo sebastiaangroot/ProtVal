@@ -214,6 +214,7 @@ class DNSPacket():
 		iteration_reference = 0
 		iter_loop = 0
 		self.temp_dict_rdata = {}
+		iteration_count = 0
 		
 		
 		while i < entries:
@@ -227,26 +228,49 @@ class DNSPacket():
 				name_dict = 'ARCOUNT_ANSWER'
 			else:
 				name_dict = 'ERROR'
+			self.response_items['RR'][i]['NAME'] = list()
+			print('name_start', name_start)
 			if byte_array[name_start] & 0b11000000 == 0b11000000:
 				reference = int(self.removeBin(bin(byte_array[name_start]), bin(byte_array[name_start+1]))[2:], 2)
+				print('reference', reference)
 				iteration_reference = byte_array[reference]
+				print('iteration_reference', iteration_reference)
+				iteration_count = reference + iteration_reference
+				print('iteration_count', iteration_count)
 				iter_loop = reference+1
+				print(iteration_reference)
+				while True:
+					while iteration_reference_loop < iteration_reference:					
+						self.temp_dict['domain_name_' + str(t) + 'part'] = self.temp_dict.setdefault('domain_name_' + str(t) + 'part', '') + chr(byte_array[iter_loop])
+						iter_loop += 1
+						iteration_reference_loop += 1
+						print(self.temp_dict)
+	
+					
+					print('t', t)
+					#self.response_items['RR'][i]['NAME'] = self.response_items['RR'][i].get('NAME', '') + self.temp_dict['domain_name_' + str(t) +'part'] + '.'
+					self.response_items['RR'][i]['NAME'].append(self.temp_dict['domain_name_' + str(t) + 'part'])
+					
+					iteration_reference_loop = 0
+					iter_loop = iteration_count + 2
+					t += 1
+					iteration_reference = byte_array[iteration_count+1]
+					iteration_count += 1
+					print('iteration_reference', iteration_reference)
+					print('iteration_count before', iteration_count)
+					iteration_count += iteration_reference
+					print('iteration_count', iteration_count)
+					print('iter_loop', iter_loop)
+					if (iteration_reference == 0) | (iteration_reference == 192):
+						print('break')
+						t = 0
+						break
+				print('uit de loop')
+				print(i)
+				print(self.response_items['RR'][i]['NAME'])
 				
-				while iteration_reference_loop < iteration_reference:					
-					self.temp_dict['domain_name_' + str(t) +'part'] = self.temp_dict.setdefault('domain_name_' + str(t) +'part', '') + chr(byte_array[iter_loop])
-					iter_loop += 1
-					iteration_reference_loop += 1
-
-
-				self.response_items['RR'][i]['NAME'] = self.response_items['RR'][i].get('NAME', '') + self.temp_dict['domain_name_' + str(t) +'part'] + '.'
-				t += 1
 				
-				reference = reference + iteration_reference + 1
-				iteration_reference= byte_array[reference]
-				iter_loop = reference+1
-				iteration_reference_loop = 0
-				if iteration_reference == 0:
-					break
+
 				
 				self.response_items['RR'][i]['RR_TYPE'] = self.response_items['RR'][i].get('RR_TYPE', '') + name_dict
 				
@@ -562,3 +586,20 @@ class DNSPacket():
 	
 	def addAdditionalRDATA(self, num, data_list):
 		self.__addRRRDATA__(self.additionals, index, data_list)
+		
+def main():
+	print("Class methods names of DNSPacket")
+	for i in dir(DNSPacket):
+			if '_' not in i:
+				print(i)
+	q = DNSPacket()
+	byte_array = q.testResponse()
+	iter = 0
+	for i in byte_array:
+		print (i, iter)
+		iter += 1
+	q.parseResponse(byte_array)
+	print(q.response_items)
+	
+if __name__ == '__main__':
+	main()
