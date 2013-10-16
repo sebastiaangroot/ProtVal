@@ -199,6 +199,6 @@ def testStandardQuery(domainname, address, verbose):
 	
 	for i in range(0, int(p_response['ANCOUNT'], 2)):
 		verbosePrint('############################################\nAnswer section %i' % i, verbose)
-		verbosePrint('')
+		verbosePrint('', verbose)
 	
 	return (success, p_response, response)
