@@ -192,8 +192,12 @@ def testValue(num, expected, verbose):
 
 def sendMessage(message, address):
 	s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+	s.settimeout(1)
 	s.sendto(message, address)
-	data = s.recv(4096)
+	try:
+		data = s.recv(4096)
+	except socket.timeout:
+		return None
 	return data
 
 def testStandardQuery(domainname, address, verbose):
@@ -202,6 +206,9 @@ def testStandardQuery(domainname, address, verbose):
 	packet = dnspacket.DNSPacket()
 	packet.getStandardQueryPacket(domainname)
 	response = sendMessage(packet.getPacketBytes(), address)
+	if response == None:
+		verbosePrint('No response was received', verbose)
+		return False
 	p_response = packet.parseResponse(response)
 
 	verbosePrint('############################################\nHeader:', verbose)
@@ -373,6 +380,9 @@ def testInverseQuery(ip, address, verbose):
 	packet = dnspacket.DNSPacket()
 	packet.getInverseQueryPacket(ip)
 	response = sendMessage(packet.getPacketBytes(), address)
+	if response == None:
+		verbosePrint('No response was received', verbose)
+		return False
 	p_response = packet.parseResponse(response)
 
 	verbosePrint('############################################\nHeader:', verbose)
@@ -551,6 +561,9 @@ def testServerStatusRequest(address, verbose):
 
 
 	response = sendMessage(packet.getPacketBytes(), address)
+	if response == None:
+		verbosePrint('No response was received', verbose)
+		return False
 	p_response = packet.parseResponse(response)
 
 	verbosePrint('############################################\nHeader:', verbose)
@@ -721,6 +734,9 @@ def testRecursionAvailable(domainname, address, verbose):
 	packet = dnspacket.DNSPacket()
 	packet.getStandardQueryPacket(domainname)
 	response = sendMessage(packet.getPacketBytes(), address)
+	if response == None:
+		verbosePrint('No response was received', verbose)
+		return False
 	p_response = packet.parseResponse(response)
 
 	verbosePrint('############################################\nHeader:', verbose)
@@ -880,6 +896,9 @@ def testQRHandling(domainname, address, verbose):
 	packet = dnspacket.DNSPacket()
 	packet.getStandardQueryQRPacket(domainname)
 	response = sendMessage(packet.getPacketBytes(), address)
+	if response == None:
+		verbosePrint('No response was received', verbose)
+		return False
 	p_response = packet.parseResponse(response)
 
 	verbosePrint('############################################\nHeader:', verbose)
@@ -1032,6 +1051,9 @@ def testOPCODEHandling(domainname, address, verbose):
 	packet = dnspacket.DNSPacket()
 	packet.getStandardQueryOPCODEPacket(domainname)
 	response = sendMessage(packet.getPacketBytes(), address)
+	if response == None:
+		verbosePrint('No response was received', verbose)
+		return False
 	p_response = packet.parseResponse(response)
 
 	verbosePrint('############################################\nHeader:', verbose)
@@ -1184,6 +1206,9 @@ def testZHandling(domainname, address, verbose):
 	packet = dnspacket.DNSPacket()
 	packet.getStandardQueryZPacket(domainname)
 	response = sendMessage(packet.getPacketBytes(), address)
+	if response == None:
+		verbosePrint('No response was received', verbose)
+		return False
 	p_response = packet.parseResponse(response)
 
 	verbosePrint('############################################\nHeader:', verbose)
