@@ -93,6 +93,7 @@ def sendMessage(message, address):
 
 def testStandardQuery(domainname, address, verbose):
 	success = True
+	aa = True
 	packet = dnspacket.DNSPacket()
 	packet.getStandardQueryPacket(domainname)
 	response = sendMessage(packet.getPacketBytes(), address)
@@ -101,57 +102,65 @@ def testStandardQuery(domainname, address, verbose):
 	verbosePrint(p_response.getPacketBytes(), verbose)
 
 	#ID
-	num = (p_response.header[0] << 8) + p_response.header[1]
-	verbosePrint('Header ID: %i ' % num, verbose, end='')
-	if not testValue(num, (p_query.header[0] << 8) + p_query.header[1], verbose):
+	num = int(p_response['ID'], 2)
+	verbosePrint('Header ID: %s ' % p_response['ID'], verbose, end='')
+	if not testValue(num, (packet.header[0] << 8) + packet.header[1], verbose):
 		success = False
 		
 	#QR
-	num = p_response.header[2] & 0b10000000
-	verbosePrint('QR: %i ' % num, verbose, end='')
+	num = int(p_response['QR'], 2)
+	verbosePrint('QR: %s ' % p_response['QR'], verbose, end='')
 	if not testValue(num, 1, verbose):
 		success = False
 		
 	#OPCODE
-	num = p_response.header[2] & 0b01111000
-	verbosePrint('OPCODE: %i ' % num, verbose, end='')
+	num = int(p_response['OPCODE'], 2)
+	verbosePrint('OPCODE: %s ' % p_response['OPCODE'], verbose, end='')
 	if not testValue(num, 0, verbose):
 		success = False
 
 	#AA
-	num = p_response.header[2] & 0b00000100
-	verbosePrint('AA: %i ' % num, verbose, end='')
-	if not testValue(num, 1, verbose):
-		success = False
+	num = int(p_response['AA'], 2)
+	verbosePrint('AA: %s ' % p_response['AA'], verbose, end='\n')
+	if not testValue(num, 1, False):
+		aa = False
 
 	#TC
-	num = p_response.header[2] & 0b00000010
-	verbosePrint('TC: %i' % num, verbose, end='')
-	if not testValue(num, 0, verbose):
-		success = False
+	verbosePrint('TC: %s' % p_response['TC'], verbose, end='\n')
 
 	#RD
-	num = p_response.header[2] & 0b00000001
-	verbosePrint('RD: %i' % num, verbose, end='')
-	if not testValue(num, 0, verbose):
+	num = int(p_response['RD'], 2)
+	verbosePrint('RD: %s' % p_response['RD'], verbose, end='')
+	if not testValue(num, packet.header[2] & 0b00000001, verbose):
 		success = False
 
 	#RA
-	num = p_response.header[3] & 0b10000000
-	verbosePrint('RA: %i' % num, verbose, end='')
-	if not testValue(num, 1, verbose):
-		success = False
+	verbosePrint('RA: %s' % p_response['RA'], verbose, end='\n')
 
 	#Z
-	num = p_response.header[3] & 0b01110000
-	verbosePrint('Z: %i' % num, verbose, end='')
+	num = (p_response['Z'], 2)
+	verbosePrint('Z: %s' % p_response['Z'], verbose, end='')
 	if not testValue(num, 0, verbose):
 		success = False
 
 	#RCODE
-	num = p_response.header[3] & 0b00001111
-	verbosePrint('RCODE: %i' % num, verbose, end='')
+	num = int(p_response['RCODE'], 2)
+	verbosePrint('RCODE: %s' % p_response['RCODE'], verbose, end='')
+	if num == 0:
+		verbosePrint(' (No error)', verbose, end='')
+	elif num == 1:
+		verbosePrint(' (Format error)', verbose, end='')
+	elif num == 2:
+		verbosePrint(' (Server failure)', verbose, end='')
+	elif num == 3:
+		verbosePrint(' (Name error)', verbose, end='')
+	elif num == 4:
+		verbosePrint(' (Not implemented)', verbose, end='')
+	elif num == 5:
+		verbosePrint(' (Refused)', verbose, end='')
+	else:
+		verbosePrint(' (Unkown error)', verbose, end='')
 	if not testValue(num, 0, verbose):
 		success = False
-	
+
 	return success
