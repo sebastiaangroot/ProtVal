@@ -197,8 +197,58 @@ def testStandardQuery(domainname, address, verbose):
 		verbosePrint('QCLASS: %s' % p_response['QCLASS'][i][0], verbose)
 		verbosePrint('QTYPE: %s' % p_response['QTYPE'][i][0], verbose)
 	
-	for i in range(0, int(p_response['ANCOUNT'], 2)):
-		verbosePrint('############################################\nAnswer section %i' % i, verbose)
-		verbosePrint('', verbose)
+	i = 0
+	for record in p_response['RR']:
+		if record['RR_TYPE'] == 'ANCOUNT_ANSWER':
+			verbosePrint('############################################\nAnswer section %i' % i, verbose)
+			verbosePrint('NAME: ', verbose, end='')
+			for j, label in enumerate(record['NAME']):
+				verbosePrint(label, verbose, end='')
+				if j < len(record['NAME']):
+					verbosePrint('.', verbose, end='')
+				else:
+					verbosePrint('', verbose)
+			verbosePrint('TYPE: %s' % record['TYPE'], verbose)
+			verbosePrint('CLASS: %s' % record['CLASS'], verbose)
+			verbosePrint('TTL: %i' % record['TTL'], verbose)
+			verbosePrint('RDLENGTH: %i' % record['RDLENGTH'], verbose)
+			verbosePrint('RDATA: %i' % record['RDATA'], verbose)
+			i++
 	
-	return (success, p_response, response)
+	i = 0
+	for record in p_response['RR']:
+		if record['RR_TYPE'] == 'NSCOUNT_ANSWER':
+			verbosePrint('############################################\nAuthority section %i' % i, verbose)
+			verbosePrint('NAME: ', verbose, end='')
+			for j, label in enumerate(record['NAME']):
+				verbosePrint(label, verbose, end='')
+				if j < len(record['NAME']):
+					verbosePrint('.', verbose, end='')
+				else:
+					verbosePrint('', verbose)
+			verbosePrint('TYPE: %s' % record['TYPE'], verbose)
+			verbosePrint('CLASS: %s' % record['CLASS'], verbose)
+			verbosePrint('TTL: %i' % record['TTL'], verbose)
+			verbosePrint('RDLENGTH: %i' % record['RDLENGTH'], verbose)
+			verbosePrint('RDATA: %i' % record['RDATA'], verbose)
+			i++
+	
+	i = 0
+	for record in p_response['RR']:
+		if record['RR_TYPE'] == 'ARCOUNT_ANSWER':
+			verbosePrint('############################################\nAdditional section %i' % i, verbose)
+			verbosePrint('NAME: ', verbose, end='')
+			for j, label in enumerate(record['NAME']):
+				verbosePrint(label, verbose, end='')
+				if j < len(record['NAME']):
+					verbosePrint('.', verbose, end='')
+				else:
+					verbosePrint('', verbose)
+			verbosePrint('TYPE: %s' % record['TYPE'], verbose)
+			verbosePrint('CLASS: %s' % record['CLASS'], verbose)
+			verbosePrint('TTL: %i' % record['TTL'], verbose)
+			verbosePrint('RDLENGTH: %i' % record['RDLENGTH'], verbose)
+			verbosePrint('RDATA: %i' % record['RDATA'], verbose)
+			i++
+	
+	return success
