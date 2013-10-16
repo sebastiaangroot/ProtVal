@@ -131,7 +131,6 @@ class DNSPacket():
 		
 	
 	def parseResponse(self, byte_array):
-		
 		self.response_items['ID'] = self.removeBin(bin(byte_array[0]), bin(byte_array[1]))
 		
 		list_header = ['QR', 'OPCODE', 'AA', 'TC', 'RD']
@@ -184,128 +183,172 @@ class DNSPacket():
 			if iteration_octet == 0:
 				self.response_items['QTYPE'][i].append(self.removeBin(bin(byte_array[y]), bin(byte_array[y+1])))
 				self.response_items['QCLASS'][i].append(self.removeBin(bin(byte_array[y+2]), bin(byte_array[y+3])))
+
+		try:
+			self.response_items['ID'] = self.removeBin(bin(byte_array[0]), bin(byte_array[1]))
+			list_header = ['QR', 'OPCODE', 'AA', 'TC', 'RD']
+			bin_header = self.removeBin(bin(byte_array[2]))
+			self.response_items[list_header[0]] = bin_header[0]
+			self.response_items[list_header[1]] = bin_header[1:5]
+			i = 5
+			while i < 8:
+				self.response_items[list_header[i-3]] = bin_header[i]
 				i += 1
-				z = 1
+			bin_header = self.removeBin(bin(byte_array[3]))
+			self.response_items['RA'] = bin_header[0]
+			self.response_items['Z'] = bin_header[1:4]
+			self.response_items['RCODE'] = bin_header[4:]
+			
+			self.response_items['QDCOUNT'] = self.removeBin(bin(byte_array[4]), bin(byte_array[5]))
+			self.response_items['ANCOUNT'] = self.removeBin(bin(byte_array[6]), bin(byte_array[7]))
+			self.response_items['NSCOUNT'] = self.removeBin(bin(byte_array[8]), bin(byte_array[9]))
+			self.response_items['ARCOUNT'] = self.removeBin(bin(byte_array[10]), bin(byte_array[11]))
+			
+			iteration_read_label = 12
+			iteration_qdcount = int(self.removeBin(bin(byte_array[4]), bin(byte_array[5])), 2)
+			iteration_octet = byte_array[12]
+			i = 0
+			x = 0
+			y = 13
+			z = 1
+			i_test = 0
+			self.response_items
+			self.temp_dict = {}
+			
+			while i < iteration_qdcount:
+				if i_test == 0:
+					self.response_items['QNAME'] = [[]] *iteration_qdcount
+					self.response_items['QTYPE'] = [[]] *iteration_qdcount
+					self.response_items['QCLASS'] = [[]] *iteration_qdcount
+					i_test = 1
+				while x < iteration_octet:
+					self.temp_dict['domain_name_' + str(i) + str(z) +'part'] = self.temp_dict.setdefault('domain_name_' + str(i) + str(z) +'part', '') + chr(byte_array[y])
+					x += 1
+					y+=1
+				self.response_items['QNAME'][i].append(self.temp_dict['domain_name_' + str(i) + str(z) +'part'])
 				x = 0
-				y += 4
-				iteration_read_label = y
+				y += 1
+				iteration_read_label += iteration_octet + 1
 				iteration_octet = byte_array[iteration_read_label]
-		iterable = y
-		del self.temp_dict, iteration_read_label, iteration_qdcount, iteration_octet, i, x, y, z, i_test
-		
-		ancount_entries = int(self.response_items['ANCOUNT'], 2)
-		nscount_entries = int(self.response_items['NSCOUNT'], 2)
-		arcount_entries = int(self.response_items['ARCOUNT'], 2)
-		entries = ancount_entries + nscount_entries + arcount_entries
-		
-		self.response_items['RR'] = []
-		i = 0
-		while i < entries:
-			self.response_items['RR'].append({})
-			i += 1
-		
-		i = 0
-		name_start = iterable
-		reference = 0
-		iteration_reference_loop = 0
-		self.temp_dict = {}
-		z= 0
-		y = 0 #hoeveelste domeinnaam
-		t = 0
-		name_dict = str()
-		name_count = 0
-		iteration_reference = 0
-		iter_loop = 0
-		self.temp_dict_rdata = {}
-		iteration_count = 0
-		loop_count = 0
-		
-		
-		while i < entries:
-			if name_count < (entries - arcount_entries - nscount_entries):
-				name_dict = 'ANCOUNT_ANSWER'
-				
-			elif name_count < (entries - arcount_entries):
-				name_dict = 'NSCOUNT_ANSWER'
-				
-			elif name_count < (entries):
-				name_dict = 'ARCOUNT_ANSWER'
-			else:
-				name_dict = 'ERROR'
-			self.response_items['RR'][i]['NAME'] = list()
-			if byte_array[name_start] & 0b11000000 == 0b11000000:
-				while byte_array[name_start] & 0b11000000 == 0b11000000:
-					reference = int(self.removeBin(bin(byte_array[name_start]), bin(byte_array[name_start+1]))[2:], 2)
-					iteration_reference = byte_array[reference]
-					iteration_count = reference + iteration_reference
-					iter_loop = reference+1
-					while True:
-						while iteration_reference_loop < iteration_reference:					
-							self.temp_dict['domain_name_' + str(t) + 'part'] = self.temp_dict.setdefault('domain_name_' + str(t) + 'part', '') + chr(byte_array[iter_loop])
-							iter_loop += 1
-							iteration_reference_loop += 1
-		
-						
-						self.response_items['RR'][i]['NAME'].append(self.temp_dict['domain_name_' + str(t) + 'part'])
-						
-						iteration_reference_loop = 0
-						iter_loop = iteration_count + 2
-						t += 1
-						iteration_reference = byte_array[iteration_count+1]
-						iteration_count += 1
-						iteration_count += iteration_reference
-						if (iteration_reference == 0) | (iteration_reference == 192):
-							
-							if iteration_reference == 192:
-								loop_count = byte_array[iteration_count-iteration_reference+1]
-								iteration_reference = byte_array[loop_count]
-								iter_loop = loop_count + 1
-								iteration_count = iteration_reference + loop_count
-								
-								continue
-							t=0
-							name_start += 2
-							break
-					
-
-					if byte_array[name_start] == 192:
-						break
-
-				
-				
-
-				
-				self.response_items['RR'][i]['RR_TYPE'] = self.response_items['RR'][i].get('RR_TYPE', '') + name_dict
-				
-				
-
-				self.response_items['RR'][i]['TYPE'] = self.response_items['RR'][i].get('TYPE', '') + self.removeBin(bin(byte_array[name_start]), bin(byte_array[name_start+1]))
-				self.response_items['RR'][i]['CLASS'] = self.response_items['RR'][i].get('CLASS', '') + self.removeBin(bin(byte_array[name_start+2]), bin(byte_array[name_start+3]))
-				self.response_items['RR'][i]['TTL'] = self.response_items['RR'][i].get('TTL', 0) + int(self.removeBin(bin(byte_array[name_start+4]), bin(byte_array[name_start+5]), bin(byte_array[name_start+6]), bin(byte_array[name_start+7])), 2)
-				self.response_items['RR'][i]['RDLENGTH'] = self.response_items['RR'][i].get('RDLENGTH', 0) + int(self.removeBin(bin(byte_array[name_start+8]), bin(byte_array[name_start+9])),2)
-				name_start += 10
-				iter_loop_rdata = 0
-				if byte_array[name_start] & 0b11000000 != 0b11000000:
-					while iter_loop_rdata < self.response_items['RR'][i]['RDLENGTH']:
-						self.temp_dict_rdata['RDATA'] = self.temp_dict_rdata.setdefault('RDATA', '') + str(byte_array[name_start])
-						iter_loop_rdata += 1
-						name_start += 1
-					self.response_items['RR'][i]['RDATA'] = self.temp_dict_rdata['RDATA']
-				else:
-					self.response_items['RR'][i]['RDATA'] = int(self.removeBin(bin(byte_array[name_start]), bin(byte_array[name_start+1])))
-					name_start += 2
-				name_count += 1	
+				z += 1
+				if iteration_octet == 0:
+					self.response_items['QTYPE'][i].append(self.removeBin(bin(byte_array[y]), bin(byte_array[y+1])))
+					self.response_items['QCLASS'][i].append(self.removeBin(bin(byte_array[y+2]), bin(byte_array[y+3])))
+					i += 1
+					z = 1
+					x = 0
+					y += 4
+					iteration_read_label = y
+					iteration_octet = byte_array[iteration_read_label]
+			iterable = y
+			del self.temp_dict, iteration_read_label, iteration_qdcount, iteration_octet, i, x, y, z, i_test
+			
+			ancount_entries = int(self.response_items['ANCOUNT'], 2)
+			nscount_entries = int(self.response_items['NSCOUNT'], 2)
+			arcount_entries = int(self.response_items['ARCOUNT'], 2)
+			entries = ancount_entries + nscount_entries + arcount_entries
+			
+			self.response_items['RR'] = []
+			i = 0
+			while i < entries:
+				self.response_items['RR'].append({})
 				i += 1
-				self.temp_dict = {}
-			else:
-				raise Exception
+			
+			i = 0
+			name_start = iterable
+			reference = 0
+			iteration_reference_loop = 0
+			self.temp_dict = {}
+			z= 0
+			y = 0 #hoeveelste domeinnaam
+			t = 0
+			name_dict = str()
+			name_count = 0
+			iteration_reference = 0
+			iter_loop = 0
+			self.temp_dict_rdata = {}
+			iteration_count = 0
+			loop_count = 0
+			
+			while i < entries:
+				if name_count < (entries - arcount_entries - nscount_entries):
+					name_dict = 'ANCOUNT_ANSWER'
+					
+				elif name_count < (entries - arcount_entries):
+					name_dict = 'NSCOUNT_ANSWER'
+					
+				elif name_count < (entries):
+					name_dict = 'ARCOUNT_ANSWER'
+				else:
+					name_dict = 'ERROR'
+				self.response_items['RR'][i]['NAME'] = list()
+				if byte_array[name_start] & 0b11000000 == 0b11000000:
+					while byte_array[name_start] & 0b11000000 == 0b11000000:
+						reference = int(self.removeBin(bin(byte_array[name_start]), bin(byte_array[name_start+1]))[2:], 2)
+						iteration_reference = byte_array[reference]
+						iteration_count = reference + iteration_reference
+						iter_loop = reference+1
+						while True:
+							while iteration_reference_loop < iteration_reference:					
+								self.temp_dict['domain_name_' + str(t) + 'part'] = self.temp_dict.setdefault('domain_name_' + str(t) + 'part', '') + chr(byte_array[iter_loop])
+								iter_loop += 1
+								iteration_reference_loop += 1
+			
+							
+							self.response_items['RR'][i]['NAME'].append(self.temp_dict['domain_name_' + str(t) + 'part'])
+							
+							iteration_reference_loop = 0
+							iter_loop = iteration_count + 2
+							t += 1
+							iteration_reference = byte_array[iteration_count+1]
+							iteration_count += 1
+							iteration_count += iteration_reference
+							if (iteration_reference == 0) | (iteration_reference == 192):
+								
+								if iteration_reference == 192:
+									loop_count = byte_array[iteration_count-iteration_reference+1]
+									iteration_reference = byte_array[loop_count]
+									iter_loop = loop_count + 1
+									iteration_count = iteration_reference + loop_count
+									
+									continue
+								t=0
+								name_start += 2
+								break
+	
+						if byte_array[name_start] == 192:
+							break
+	
+					self.response_items['RR'][i]['RR_TYPE'] = self.response_items['RR'][i].get('RR_TYPE', '') + name_dict
+					self.response_items['RR'][i]['TYPE'] = self.response_items['RR'][i].get('TYPE', '') + self.removeBin(bin(byte_array[name_start]), bin(byte_array[name_start+1]))
+					self.response_items['RR'][i]['CLASS'] = self.response_items['RR'][i].get('CLASS', '') + self.removeBin(bin(byte_array[name_start+2]), bin(byte_array[name_start+3]))
+					self.response_items['RR'][i]['TTL'] = self.response_items['RR'][i].get('TTL', 0) + int(self.removeBin(bin(byte_array[name_start+4]), bin(byte_array[name_start+5]), bin(byte_array[name_start+6]), bin(byte_array[name_start+7])), 2)
+					self.response_items['RR'][i]['RDLENGTH'] = self.response_items['RR'][i].get('RDLENGTH', 0) + int(self.removeBin(bin(byte_array[name_start+8]), bin(byte_array[name_start+9])),2)
+					name_start += 10
+					iter_loop_rdata = 0
+					if byte_array[name_start] & 0b11000000 != 0b11000000:
+						while iter_loop_rdata < self.response_items['RR'][i]['RDLENGTH']:
+							self.temp_dict_rdata['RDATA'] = self.temp_dict_rdata.setdefault('RDATA', '') + str(byte_array[name_start])
+							iter_loop_rdata += 1
+							name_start += 1
+						self.response_items['RR'][i]['RDATA'] = self.temp_dict_rdata['RDATA']
+					else:
+						self.response_items['RR'][i]['RDATA'] = int(self.removeBin(bin(byte_array[name_start]), bin(byte_array[name_start+1])))
+						name_start += 2
+					name_count += 1	
+					i += 1
+					self.temp_dict = {}
+				else:
+					raise Exception
+			
+			return(self.response_items)
 		
-		return(self.response_items)
+		except LookupError as err:
+			print('An incomplete DNS packet has been received. This can be an error or is an unknown website.')
+			print(err)
 		
 	def testResponse(self):
 		buffer_size = 1024
-		
-		
 		self.setHeaderID(0b10011001)
 		self.setHeaderRD(1)
 		self.setHeaderQDCOUNT(1)
@@ -590,4 +633,3 @@ class DNSPacket():
 	def addAdditionalRDATA(self, num, data_list):
 		self.__addRRRDATA__(self.additionals, index, data_list)
 		
-
