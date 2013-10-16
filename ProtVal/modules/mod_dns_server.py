@@ -1,4 +1,4 @@
-import dnspacket
+import modules.dnspacket as dnspacket
 import socket
 
 def getModuleName():
