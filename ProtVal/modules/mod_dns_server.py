@@ -212,7 +212,7 @@ def testStandardQuery(domainname, address, verbose):
 			verbosePrint('CLASS: %s' % record['CLASS'], verbose)
 			verbosePrint('TTL: %i' % record['TTL'], verbose)
 			verbosePrint('RDLENGTH: %i' % record['RDLENGTH'], verbose)
-			verbosePrint('RDATA: %i' % record['RDATA'], verbose)
+			verbosePrint('RDATA: %s' % record['RDATA'], verbose)
 			i += 1
 	
 	i = 0
@@ -230,7 +230,7 @@ def testStandardQuery(domainname, address, verbose):
 			verbosePrint('CLASS: %s' % record['CLASS'], verbose)
 			verbosePrint('TTL: %i' % record['TTL'], verbose)
 			verbosePrint('RDLENGTH: %i' % record['RDLENGTH'], verbose)
-			verbosePrint('RDATA: %i' % record['RDATA'], verbose)
+			verbosePrint('RDATA: %s' % record['RDATA'], verbose)
 			i += 1
 	
 	i = 0
@@ -248,7 +248,7 @@ def testStandardQuery(domainname, address, verbose):
 			verbosePrint('CLASS: %s' % record['CLASS'], verbose)
 			verbosePrint('TTL: %i' % record['TTL'], verbose)
 			verbosePrint('RDLENGTH: %i' % record['RDLENGTH'], verbose)
-			verbosePrint('RDATA: %i' % record['RDATA'], verbose)
+			verbosePrint('RDATA: %s' % record['RDATA'], verbose)
 			i += 1
 	
 	return success
