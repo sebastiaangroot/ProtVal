@@ -99,6 +99,7 @@ def testStandardQuery(domainname, address, verbose):
 	response = sendMessage(packet.getPacketBytes(), address)
 	p_response = packet.parseResponse(response)
 
+	verbosePrint('############################################\nHeader:', verbose)
 	#ID
 	num = int(p_response['ID'], 2)
 	verbosePrint('Header ID: %s ' % p_response['ID'], verbose, end='')
@@ -184,5 +185,20 @@ def testStandardQuery(domainname, address, verbose):
 	#ARCOUNT
 	verbosePrint('ARCOUNT: %s' % p_response['ARCOUNT'], verbose, end='\n')
 
+	for i in range(0, int(p_response['QDCOUNT'], 2)):
+		verbosePrint('############################################\nQuestion section %i' % i, verbose)
+		verbosePrint('QNAME: ', verbose, end='')
+		for j, label in enumerate(p_response['QNAME'][i]):
+			verbosePrint(label, verbose, end='')
+			if j < len(p_response['QNAME'][i]) - 1:
+				verbosePrint('.', verbose, end='')
+			else:
+				verbosePrint('', verbose)
+		verbosePrint('QCLASS: %s' % p_response['QCLASS'][i][0], verbose)
+		verbosePrint('QTYPE: %s' % p_response['QTYPE'][i][0], verbose)
 	
-	return (success, p_response)
+	for i in range(0, int(p_response['ANCOUNT'], 2)):
+		verbosePrint('############################################\nAnswer section %i' % i, verbose)
+		verbosePrint('')
+	
+	return (success, p_response, response)
