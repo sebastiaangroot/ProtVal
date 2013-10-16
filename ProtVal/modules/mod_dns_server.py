@@ -114,6 +114,14 @@ def testStandardQuery(domainname, address, verbose):
 	#OPCODE
 	num = int(p_response['OPCODE'], 2)
 	verbosePrint('OPCODE: %s ' % p_response['OPCODE'], verbose, end='')
+	if num == 0:
+		verbosePrint(' (Standard Query)', verbose, end='')
+	elif num == 1:
+		verbosePrint(' (Inverse Query)', verbose, end='')
+	elif num == 2:
+		verbosePrint(' (Server Status Request)', verbose, end='')
+	else:
+		verbosePrint(' (Reserved)', verbose, end='')
 	if not testValue(num, 0, verbose):
 		success = False
 
@@ -160,5 +168,21 @@ def testStandardQuery(domainname, address, verbose):
 		verbosePrint(' (Unkown error)', verbose, end='')
 	if not testValue(num, 0, verbose):
 		success = False
+	
+	#QDCOUNT
+	num = int(p_response['QDCOUNT'], 2)
+	verbosePrint('QDCOUNT: %s' % p_response['QDCOUNT'], verbose, end='')
+	if not testValue(num, (packet.header[4] << 8) + packet.header[5], verbose)
+		success = False
+	
+	#ANCOUNT
+	verbosePrint('ANCOUNT: %s' % p_response['ANCOUNT'], verbose, end='\n')
 
-	return success
+	#NSCOUNT
+	verbosePrint('NSCOUNT: %s' % p_response['NSCOUNT'], verbose, end='\n')
+
+	#ARCOUNT
+	verbosePrint('ARCOUNT: %s' % p_response['ARCOUNT'], verbose, end='\n')
+
+	
+	return (success, p_response)
