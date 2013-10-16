@@ -215,6 +215,7 @@ class DNSPacket():
 		iter_loop = 0
 		self.temp_dict_rdata = {}
 		iteration_count = 0
+		loop_count = 0
 		
 		
 		while i < entries:
@@ -231,50 +232,69 @@ class DNSPacket():
 			self.response_items['RR'][i]['NAME'] = list()
 			print('name_start', name_start)
 			if byte_array[name_start] & 0b11000000 == 0b11000000:
-				reference = int(self.removeBin(bin(byte_array[name_start]), bin(byte_array[name_start+1]))[2:], 2)
-				print('reference', reference)
-				iteration_reference = byte_array[reference]
-				print('iteration_reference', iteration_reference)
-				iteration_count = reference + iteration_reference
-				print('iteration_count', iteration_count)
-				iter_loop = reference+1
-				print(iteration_reference)
-				while True:
-					while iteration_reference_loop < iteration_reference:					
-						self.temp_dict['domain_name_' + str(t) + 'part'] = self.temp_dict.setdefault('domain_name_' + str(t) + 'part', '') + chr(byte_array[iter_loop])
-						iter_loop += 1
-						iteration_reference_loop += 1
-						print(self.temp_dict)
-	
-					
-					print('t', t)
-					#self.response_items['RR'][i]['NAME'] = self.response_items['RR'][i].get('NAME', '') + self.temp_dict['domain_name_' + str(t) +'part'] + '.'
-					self.response_items['RR'][i]['NAME'].append(self.temp_dict['domain_name_' + str(t) + 'part'])
-					
-					iteration_reference_loop = 0
-					iter_loop = iteration_count + 2
-					t += 1
-					iteration_reference = byte_array[iteration_count+1]
-					iteration_count += 1
+				print('while loop name_start')
+				while byte_array[name_start] & 0b11000000 == 0b11000000:
+					reference = int(self.removeBin(bin(byte_array[name_start]), bin(byte_array[name_start+1]))[2:], 2)
+					print('reference', reference)
+					iteration_reference = byte_array[reference]
 					print('iteration_reference', iteration_reference)
-					print('iteration_count before', iteration_count)
-					iteration_count += iteration_reference
+					iteration_count = reference + iteration_reference
 					print('iteration_count', iteration_count)
-					print('iter_loop', iter_loop)
-					if (iteration_reference == 0) | (iteration_reference == 192):
-						print('break')
-						t = 0
+					iter_loop = reference+1
+					print(iteration_reference)
+					while True:
+						while iteration_reference_loop < iteration_reference:					
+							self.temp_dict['domain_name_' + str(t) + 'part'] = self.temp_dict.setdefault('domain_name_' + str(t) + 'part', '') + chr(byte_array[iter_loop])
+							iter_loop += 1
+							iteration_reference_loop += 1
+							print(self.temp_dict)
+		
+						
+						print('t', t)
+						#self.response_items['RR'][i]['NAME'] = self.response_items['RR'][i].get('NAME', '') + self.temp_dict['domain_name_' + str(t) +'part'] + '.'
+						self.response_items['RR'][i]['NAME'].append(self.temp_dict['domain_name_' + str(t) + 'part'])
+						
+						iteration_reference_loop = 0
+						iter_loop = iteration_count + 2
+						t += 1
+						iteration_reference = byte_array[iteration_count+1]
+						iteration_count += 1
+						print('iteration_reference', iteration_reference)
+						print('iteration_count before', iteration_count)
+						iteration_count += iteration_reference
+						print('iteration_count', iteration_count)
+						print('iter_loop', iter_loop)
+						if (iteration_reference == 0) | (iteration_reference == 192):
+							print('break')
+							
+							if iteration_reference == 192:
+								print('iteration_reference is 192, entering loop')
+								loop_count = byte_array[iteration_count-iteration_reference+1]
+								print('loop_count', loop_count)
+								iteration_reference = byte_array[loop_count]
+								print('iteration_reference is 192, iteration_reference:', iteration_reference)
+								iter_loop = loop_count + 1
+								print('iter_loop', iter_loop)
+								iteration_count = iteration_reference + loop_count
+								
+								continue
+							t=0
+							name_start += 2
+							break
+					print('uit de loop')
+					print(i)
+					if byte_array[name_start] == 192:
+						print('nog een loop')
+						print('debug: name_start')
 						break
-				print('uit de loop')
-				print(i)
-				print(self.response_items['RR'][i]['NAME'])
+					print(self.response_items['RR'][i]['NAME'])
 				
 				
 
 				
 				self.response_items['RR'][i]['RR_TYPE'] = self.response_items['RR'][i].get('RR_TYPE', '') + name_dict
 				
-				name_start += 2
+				
 
 				self.response_items['RR'][i]['TYPE'] = self.response_items['RR'][i].get('TYPE', '') + self.removeBin(bin(byte_array[name_start]), bin(byte_array[name_start+1]))
 				self.response_items['RR'][i]['CLASS'] = self.response_items['RR'][i].get('CLASS', '') + self.removeBin(bin(byte_array[name_start+2]), bin(byte_array[name_start+3]))
