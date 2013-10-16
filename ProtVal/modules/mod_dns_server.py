@@ -302,59 +302,68 @@ def testStandardQuery(domainname, address, verbose):
 		verbosePrint('QCLASS: %s' % p_response['QCLASS'][i][0], verbose)
 		verbosePrint('QTYPE: %s' % p_response['QTYPE'][i][0], verbose)
 	
-	i = 0
-	for record in p_response['RR']:
-		if record['RR_TYPE'] == 'ANCOUNT_ANSWER':
-			verbosePrint('############################################\nAnswer section %i' % i, verbose)
-			verbosePrint('NAME: ', verbose, end='')
-			for j, label in enumerate(record['NAME']):
-				verbosePrint(label, verbose, end='')
-				if j < len(record['NAME']) - 1:
-					verbosePrint('.', verbose, end='')
-				else:
-					verbosePrint('', verbose)
-			verbosePrint('TYPE: %s' % record['TYPE'], verbose)
-			verbosePrint('CLASS: %s' % record['CLASS'], verbose)
-			verbosePrint('TTL: %i' % record['TTL'], verbose)
-			verbosePrint('RDLENGTH: %i' % record['RDLENGTH'], verbose)
-			verbosePrint('RDATA: %s' % record['RDATA'], verbose)
-			i += 1
+	try:
+		i = 0
+		for record in p_response['RR']:
+			if record['RR_TYPE'] == 'ANCOUNT_ANSWER':
+				verbosePrint('############################################\nAnswer section %i' % i, verbose)
+				verbosePrint('NAME: ', verbose, end='')
+				for j, label in enumerate(record['NAME']):
+					verbosePrint(label, verbose, end='')
+					if j < len(record['NAME']) - 1:
+						verbosePrint('.', verbose, end='')
+					else:
+						verbosePrint('', verbose)
+				verbosePrint('TYPE: %s' % record['TYPE'], verbose)
+				verbosePrint('CLASS: %s' % record['CLASS'], verbose)
+				verbosePrint('TTL: %i' % record['TTL'], verbose)
+				verbosePrint('RDLENGTH: %i' % record['RDLENGTH'], verbose)
+				verbosePrint('RDATA: %s' % record['RDATA'], verbose)
+				i += 1
+	except KeyError:
+		pass
 	
-	i = 0
-	for record in p_response['RR']:
-		if record['RR_TYPE'] == 'NSCOUNT_ANSWER':
-			verbosePrint('############################################\nAuthority section %i' % i, verbose)
-			verbosePrint('NAME: ', verbose, end='')
-			for j, label in enumerate(record['NAME']):
-				verbosePrint(label, verbose, end='')
-				if j < len(record['NAME']) - 1:
-					verbosePrint('.', verbose, end='')
-				else:
-					verbosePrint('', verbose)
-			verbosePrint('TYPE: %s' % record['TYPE'], verbose)
-			verbosePrint('CLASS: %s' % record['CLASS'], verbose)
-			verbosePrint('TTL: %i' % record['TTL'], verbose)
-			verbosePrint('RDLENGTH: %i' % record['RDLENGTH'], verbose)
-			verbosePrint('RDATA: %s' % record['RDATA'], verbose)
-			i += 1
+	try:
+		i = 0
+		for record in p_response['RR']:
+			if record['RR_TYPE'] == 'NSCOUNT_ANSWER':
+				verbosePrint('############################################\nAuthority section %i' % i, verbose)
+				verbosePrint('NAME: ', verbose, end='')
+				for j, label in enumerate(record['NAME']):
+					verbosePrint(label, verbose, end='')
+					if j < len(record['NAME']) - 1:
+						verbosePrint('.', verbose, end='')
+					else:
+						verbosePrint('', verbose)
+				verbosePrint('TYPE: %s' % record['TYPE'], verbose)
+				verbosePrint('CLASS: %s' % record['CLASS'], verbose)
+				verbosePrint('TTL: %i' % record['TTL'], verbose)
+				verbosePrint('RDLENGTH: %i' % record['RDLENGTH'], verbose)
+				verbosePrint('RDATA: %s' % record['RDATA'], verbose)
+				i += 1
+	except KeyError:
+		pass
 	
-	i = 0
-	for record in p_response['RR']:
-		if record['RR_TYPE'] == 'ARCOUNT_ANSWER':
-			verbosePrint('############################################\nAdditional section %i' % i, verbose)
-			verbosePrint('NAME: ', verbose, end='')
-			for j, label in enumerate(record['NAME']):
-				verbosePrint(label, verbose, end='')
-				if j < len(record['NAME']) - 1:
-					verbosePrint('.', verbose, end='')
-				else:
-					verbosePrint('', verbose)
-			verbosePrint('TYPE: %s' % record['TYPE'], verbose)
-			verbosePrint('CLASS: %s' % record['CLASS'], verbose)
-			verbosePrint('TTL: %i' % record['TTL'], verbose)
-			verbosePrint('RDLENGTH: %i' % record['RDLENGTH'], verbose)
-			verbosePrint('RDATA: %s' % record['RDATA'], verbose)
-			i += 1
+	try:
+		i = 0
+		for record in p_response['RR']:
+			if record['RR_TYPE'] == 'ARCOUNT_ANSWER':
+				verbosePrint('############################################\nAdditional section %i' % i, verbose)
+				verbosePrint('NAME: ', verbose, end='')
+				for j, label in enumerate(record['NAME']):
+					verbosePrint(label, verbose, end='')
+					if j < len(record['NAME']) - 1:
+						verbosePrint('.', verbose, end='')
+					else:
+						verbosePrint('', verbose)
+				verbosePrint('TYPE: %s' % record['TYPE'], verbose)
+				verbosePrint('CLASS: %s' % record['CLASS'], verbose)
+				verbosePrint('TTL: %i' % record['TTL'], verbose)
+				verbosePrint('RDLENGTH: %i' % record['RDLENGTH'], verbose)
+				verbosePrint('RDATA: %s' % record['RDATA'], verbose)
+				i += 1
+	except KeyError:
+		pass
 	
 	return success
 
@@ -464,59 +473,68 @@ def testInverseQuery(ip, address, verbose):
 		verbosePrint('QCLASS: %s' % p_response['QCLASS'][i][0], verbose)
 		verbosePrint('QTYPE: %s' % p_response['QTYPE'][i][0], verbose)
 	
-	i = 0
-	for record in p_response['RR']:
-		if record['RR_TYPE'] == 'ANCOUNT_ANSWER':
-			verbosePrint('############################################\nAnswer section %i' % i, verbose)
-			verbosePrint('NAME: ', verbose, end='')
-			for j, label in enumerate(record['NAME']):
-				verbosePrint(label, verbose, end='')
-				if j < len(record['NAME']) - 1:
-					verbosePrint('.', verbose, end='')
-				else:
-					verbosePrint('', verbose)
-			verbosePrint('TYPE: %s' % record['TYPE'], verbose)
-			verbosePrint('CLASS: %s' % record['CLASS'], verbose)
-			verbosePrint('TTL: %i' % record['TTL'], verbose)
-			verbosePrint('RDLENGTH: %i' % record['RDLENGTH'], verbose)
-			verbosePrint('RDATA: %s' % record['RDATA'], verbose)
-			i += 1
+	try:
+		i = 0
+		for record in p_response['RR']:
+			if record['RR_TYPE'] == 'ANCOUNT_ANSWER':
+				verbosePrint('############################################\nAnswer section %i' % i, verbose)
+				verbosePrint('NAME: ', verbose, end='')
+				for j, label in enumerate(record['NAME']):
+					verbosePrint(label, verbose, end='')
+					if j < len(record['NAME']) - 1:
+						verbosePrint('.', verbose, end='')
+					else:
+						verbosePrint('', verbose)
+				verbosePrint('TYPE: %s' % record['TYPE'], verbose)
+				verbosePrint('CLASS: %s' % record['CLASS'], verbose)
+				verbosePrint('TTL: %i' % record['TTL'], verbose)
+				verbosePrint('RDLENGTH: %i' % record['RDLENGTH'], verbose)
+				verbosePrint('RDATA: %s' % record['RDATA'], verbose)
+				i += 1
+	except KeyError:
+		pass
 	
-	i = 0
-	for record in p_response['RR']:
-		if record['RR_TYPE'] == 'NSCOUNT_ANSWER':
-			verbosePrint('############################################\nAuthority section %i' % i, verbose)
-			verbosePrint('NAME: ', verbose, end='')
-			for j, label in enumerate(record['NAME']):
-				verbosePrint(label, verbose, end='')
-				if j < len(record['NAME']) - 1:
-					verbosePrint('.', verbose, end='')
-				else:
-					verbosePrint('', verbose)
-			verbosePrint('TYPE: %s' % record['TYPE'], verbose)
-			verbosePrint('CLASS: %s' % record['CLASS'], verbose)
-			verbosePrint('TTL: %i' % record['TTL'], verbose)
-			verbosePrint('RDLENGTH: %i' % record['RDLENGTH'], verbose)
-			verbosePrint('RDATA: %s' % record['RDATA'], verbose)
-			i += 1
+	try:
+		i = 0
+		for record in p_response['RR']:
+			if record['RR_TYPE'] == 'NSCOUNT_ANSWER':
+				verbosePrint('############################################\nAuthority section %i' % i, verbose)
+				verbosePrint('NAME: ', verbose, end='')
+				for j, label in enumerate(record['NAME']):
+					verbosePrint(label, verbose, end='')
+					if j < len(record['NAME']) - 1:
+						verbosePrint('.', verbose, end='')
+					else:
+						verbosePrint('', verbose)
+				verbosePrint('TYPE: %s' % record['TYPE'], verbose)
+				verbosePrint('CLASS: %s' % record['CLASS'], verbose)
+				verbosePrint('TTL: %i' % record['TTL'], verbose)
+				verbosePrint('RDLENGTH: %i' % record['RDLENGTH'], verbose)
+				verbosePrint('RDATA: %s' % record['RDATA'], verbose)
+				i += 1
+	except KeyError:
+		pass
 	
-	i = 0
-	for record in p_response['RR']:
-		if record['RR_TYPE'] == 'ARCOUNT_ANSWER':
-			verbosePrint('############################################\nAdditional section %i' % i, verbose)
-			verbosePrint('NAME: ', verbose, end='')
-			for j, label in enumerate(record['NAME']):
-				verbosePrint(label, verbose, end='')
-				if j < len(record['NAME']) - 1:
-					verbosePrint('.', verbose, end='')
-				else:
-					verbosePrint('', verbose)
-			verbosePrint('TYPE: %s' % record['TYPE'], verbose)
-			verbosePrint('CLASS: %s' % record['CLASS'], verbose)
-			verbosePrint('TTL: %i' % record['TTL'], verbose)
-			verbosePrint('RDLENGTH: %i' % record['RDLENGTH'], verbose)
-			verbosePrint('RDATA: %s' % record['RDATA'], verbose)
-			i += 1
+	try:
+		i = 0
+		for record in p_response['RR']:
+			if record['RR_TYPE'] == 'ARCOUNT_ANSWER':
+				verbosePrint('############################################\nAdditional section %i' % i, verbose)
+				verbosePrint('NAME: ', verbose, end='')
+				for j, label in enumerate(record['NAME']):
+					verbosePrint(label, verbose, end='')
+					if j < len(record['NAME']) - 1:
+						verbosePrint('.', verbose, end='')
+					else:
+						verbosePrint('', verbose)
+				verbosePrint('TYPE: %s' % record['TYPE'], verbose)
+				verbosePrint('CLASS: %s' % record['CLASS'], verbose)
+				verbosePrint('TTL: %i' % record['TTL'], verbose)
+				verbosePrint('RDLENGTH: %i' % record['RDLENGTH'], verbose)
+				verbosePrint('RDATA: %s' % record['RDATA'], verbose)
+				i += 1
+	except KeyError:
+		pass
 	
 	return success
 
@@ -633,59 +651,68 @@ def testServerStatusRequest(address, verbose):
 		verbosePrint('QCLASS: %s' % p_response['QCLASS'][i][0], verbose)
 		verbosePrint('QTYPE: %s' % p_response['QTYPE'][i][0], verbose)
 	
-	i = 0
-	for record in p_response['RR']:
-		if record['RR_TYPE'] == 'ANCOUNT_ANSWER':
-			verbosePrint('############################################\nAnswer section %i' % i, verbose)
-			verbosePrint('NAME: ', verbose, end='')
-			for j, label in enumerate(record['NAME']):
-				verbosePrint(label, verbose, end='')
-				if j < len(record['NAME']) - 1:
-					verbosePrint('.', verbose, end='')
-				else:
-					verbosePrint('', verbose)
-			verbosePrint('TYPE: %s' % record['TYPE'], verbose)
-			verbosePrint('CLASS: %s' % record['CLASS'], verbose)
-			verbosePrint('TTL: %i' % record['TTL'], verbose)
-			verbosePrint('RDLENGTH: %i' % record['RDLENGTH'], verbose)
-			verbosePrint('RDATA: %s' % record['RDATA'], verbose)
-			i += 1
+	try:
+		i = 0
+		for record in p_response['RR']:
+			if record['RR_TYPE'] == 'ANCOUNT_ANSWER':
+				verbosePrint('############################################\nAnswer section %i' % i, verbose)
+				verbosePrint('NAME: ', verbose, end='')
+				for j, label in enumerate(record['NAME']):
+					verbosePrint(label, verbose, end='')
+					if j < len(record['NAME']) - 1:
+						verbosePrint('.', verbose, end='')
+					else:
+						verbosePrint('', verbose)
+				verbosePrint('TYPE: %s' % record['TYPE'], verbose)
+				verbosePrint('CLASS: %s' % record['CLASS'], verbose)
+				verbosePrint('TTL: %i' % record['TTL'], verbose)
+				verbosePrint('RDLENGTH: %i' % record['RDLENGTH'], verbose)
+				verbosePrint('RDATA: %s' % record['RDATA'], verbose)
+				i += 1
+	except KeyError:
+		pass
 	
-	i = 0
-	for record in p_response['RR']:
-		if record['RR_TYPE'] == 'NSCOUNT_ANSWER':
-			verbosePrint('############################################\nAuthority section %i' % i, verbose)
-			verbosePrint('NAME: ', verbose, end='')
-			for j, label in enumerate(record['NAME']):
-				verbosePrint(label, verbose, end='')
-				if j < len(record['NAME']) - 1:
-					verbosePrint('.', verbose, end='')
-				else:
-					verbosePrint('', verbose)
-			verbosePrint('TYPE: %s' % record['TYPE'], verbose)
-			verbosePrint('CLASS: %s' % record['CLASS'], verbose)
-			verbosePrint('TTL: %i' % record['TTL'], verbose)
-			verbosePrint('RDLENGTH: %i' % record['RDLENGTH'], verbose)
-			verbosePrint('RDATA: %s' % record['RDATA'], verbose)
-			i += 1
+	try:
+		i = 0
+		for record in p_response['RR']:
+			if record['RR_TYPE'] == 'NSCOUNT_ANSWER':
+				verbosePrint('############################################\nAuthority section %i' % i, verbose)
+				verbosePrint('NAME: ', verbose, end='')
+				for j, label in enumerate(record['NAME']):
+					verbosePrint(label, verbose, end='')
+					if j < len(record['NAME']) - 1:
+						verbosePrint('.', verbose, end='')
+					else:
+						verbosePrint('', verbose)
+				verbosePrint('TYPE: %s' % record['TYPE'], verbose)
+				verbosePrint('CLASS: %s' % record['CLASS'], verbose)
+				verbosePrint('TTL: %i' % record['TTL'], verbose)
+				verbosePrint('RDLENGTH: %i' % record['RDLENGTH'], verbose)
+				verbosePrint('RDATA: %s' % record['RDATA'], verbose)
+				i += 1
+	except KeyError:
+		pass
 	
-	i = 0
-	for record in p_response['RR']:
-		if record['RR_TYPE'] == 'ARCOUNT_ANSWER':
-			verbosePrint('############################################\nAdditional section %i' % i, verbose)
-			verbosePrint('NAME: ', verbose, end='')
-			for j, label in enumerate(record['NAME']):
-				verbosePrint(label, verbose, end='')
-				if j < len(record['NAME']) - 1:
-					verbosePrint('.', verbose, end='')
-				else:
-					verbosePrint('', verbose)
-			verbosePrint('TYPE: %s' % record['TYPE'], verbose)
-			verbosePrint('CLASS: %s' % record['CLASS'], verbose)
-			verbosePrint('TTL: %i' % record['TTL'], verbose)
-			verbosePrint('RDLENGTH: %i' % record['RDLENGTH'], verbose)
-			verbosePrint('RDATA: %s' % record['RDATA'], verbose)
-			i += 1
+	try:
+		i = 0
+		for record in p_response['RR']:
+			if record['RR_TYPE'] == 'ARCOUNT_ANSWER':
+				verbosePrint('############################################\nAdditional section %i' % i, verbose)
+				verbosePrint('NAME: ', verbose, end='')
+				for j, label in enumerate(record['NAME']):
+					verbosePrint(label, verbose, end='')
+					if j < len(record['NAME']) - 1:
+						verbosePrint('.', verbose, end='')
+					else:
+						verbosePrint('', verbose)
+				verbosePrint('TYPE: %s' % record['TYPE'], verbose)
+				verbosePrint('CLASS: %s' % record['CLASS'], verbose)
+				verbosePrint('TTL: %i' % record['TTL'], verbose)
+				verbosePrint('RDLENGTH: %i' % record['RDLENGTH'], verbose)
+				verbosePrint('RDATA: %s' % record['RDATA'], verbose)
+				i += 1
+	except KeyError:
+		pass
 	
 	return success
 
@@ -783,59 +810,68 @@ def testRecursionAvailable(domainname, address, verbose):
 		verbosePrint('QCLASS: %s' % p_response['QCLASS'][i][0], verbose)
 		verbosePrint('QTYPE: %s' % p_response['QTYPE'][i][0], verbose)
 	
-	i = 0
-	for record in p_response['RR']:
-		if record['RR_TYPE'] == 'ANCOUNT_ANSWER':
-			verbosePrint('############################################\nAnswer section %i' % i, verbose)
-			verbosePrint('NAME: ', verbose, end='')
-			for j, label in enumerate(record['NAME']):
-				verbosePrint(label, verbose, end='')
-				if j < len(record['NAME']) - 1:
-					verbosePrint('.', verbose, end='')
-				else:
-					verbosePrint('', verbose)
-			verbosePrint('TYPE: %s' % record['TYPE'], verbose)
-			verbosePrint('CLASS: %s' % record['CLASS'], verbose)
-			verbosePrint('TTL: %i' % record['TTL'], verbose)
-			verbosePrint('RDLENGTH: %i' % record['RDLENGTH'], verbose)
-			verbosePrint('RDATA: %s' % record['RDATA'], verbose)
-			i += 1
+	try:
+		i = 0
+		for record in p_response['RR']:
+			if record['RR_TYPE'] == 'ANCOUNT_ANSWER':
+				verbosePrint('############################################\nAnswer section %i' % i, verbose)
+				verbosePrint('NAME: ', verbose, end='')
+				for j, label in enumerate(record['NAME']):
+					verbosePrint(label, verbose, end='')
+					if j < len(record['NAME']) - 1:
+						verbosePrint('.', verbose, end='')
+					else:
+						verbosePrint('', verbose)
+				verbosePrint('TYPE: %s' % record['TYPE'], verbose)
+				verbosePrint('CLASS: %s' % record['CLASS'], verbose)
+				verbosePrint('TTL: %i' % record['TTL'], verbose)
+				verbosePrint('RDLENGTH: %i' % record['RDLENGTH'], verbose)
+				verbosePrint('RDATA: %s' % record['RDATA'], verbose)
+				i += 1
+	except KeyError:
+		pass
 	
-	i = 0
-	for record in p_response['RR']:
-		if record['RR_TYPE'] == 'NSCOUNT_ANSWER':
-			verbosePrint('############################################\nAuthority section %i' % i, verbose)
-			verbosePrint('NAME: ', verbose, end='')
-			for j, label in enumerate(record['NAME']):
-				verbosePrint(label, verbose, end='')
-				if j < len(record['NAME']) - 1:
-					verbosePrint('.', verbose, end='')
-				else:
-					verbosePrint('', verbose)
-			verbosePrint('TYPE: %s' % record['TYPE'], verbose)
-			verbosePrint('CLASS: %s' % record['CLASS'], verbose)
-			verbosePrint('TTL: %i' % record['TTL'], verbose)
-			verbosePrint('RDLENGTH: %i' % record['RDLENGTH'], verbose)
-			verbosePrint('RDATA: %s' % record['RDATA'], verbose)
-			i += 1
+	try:
+		i = 0
+		for record in p_response['RR']:
+			if record['RR_TYPE'] == 'NSCOUNT_ANSWER':
+				verbosePrint('############################################\nAuthority section %i' % i, verbose)
+				verbosePrint('NAME: ', verbose, end='')
+				for j, label in enumerate(record['NAME']):
+					verbosePrint(label, verbose, end='')
+					if j < len(record['NAME']) - 1:
+						verbosePrint('.', verbose, end='')
+					else:
+						verbosePrint('', verbose)
+				verbosePrint('TYPE: %s' % record['TYPE'], verbose)
+				verbosePrint('CLASS: %s' % record['CLASS'], verbose)
+				verbosePrint('TTL: %i' % record['TTL'], verbose)
+				verbosePrint('RDLENGTH: %i' % record['RDLENGTH'], verbose)
+				verbosePrint('RDATA: %s' % record['RDATA'], verbose)
+				i += 1
+	except KeyError:
+		pass
 	
-	i = 0
-	for record in p_response['RR']:
-		if record['RR_TYPE'] == 'ARCOUNT_ANSWER':
-			verbosePrint('############################################\nAdditional section %i' % i, verbose)
-			verbosePrint('NAME: ', verbose, end='')
-			for j, label in enumerate(record['NAME']):
-				verbosePrint(label, verbose, end='')
-				if j < len(record['NAME']) - 1:
-					verbosePrint('.', verbose, end='')
-				else:
-					verbosePrint('', verbose)
-			verbosePrint('TYPE: %s' % record['TYPE'], verbose)
-			verbosePrint('CLASS: %s' % record['CLASS'], verbose)
-			verbosePrint('TTL: %i' % record['TTL'], verbose)
-			verbosePrint('RDLENGTH: %i' % record['RDLENGTH'], verbose)
-			verbosePrint('RDATA: %s' % record['RDATA'], verbose)
-			i += 1
+	try:
+		i = 0
+		for record in p_response['RR']:
+			if record['RR_TYPE'] == 'ARCOUNT_ANSWER':
+				verbosePrint('############################################\nAdditional section %i' % i, verbose)
+				verbosePrint('NAME: ', verbose, end='')
+				for j, label in enumerate(record['NAME']):
+					verbosePrint(label, verbose, end='')
+					if j < len(record['NAME']) - 1:
+						verbosePrint('.', verbose, end='')
+					else:
+						verbosePrint('', verbose)
+				verbosePrint('TYPE: %s' % record['TYPE'], verbose)
+				verbosePrint('CLASS: %s' % record['CLASS'], verbose)
+				verbosePrint('TTL: %i' % record['TTL'], verbose)
+				verbosePrint('RDLENGTH: %i' % record['RDLENGTH'], verbose)
+				verbosePrint('RDATA: %s' % record['RDATA'], verbose)
+				i += 1
+	except KeyError:
+		pass
 	
 	return success
 
@@ -926,59 +962,68 @@ def testQRHandling(domainname, address, verbose):
 		verbosePrint('QCLASS: %s' % p_response['QCLASS'][i][0], verbose)
 		verbosePrint('QTYPE: %s' % p_response['QTYPE'][i][0], verbose)
 	
-	i = 0
-	for record in p_response['RR']:
-		if record['RR_TYPE'] == 'ANCOUNT_ANSWER':
-			verbosePrint('############################################\nAnswer section %i' % i, verbose)
-			verbosePrint('NAME: ', verbose, end='')
-			for j, label in enumerate(record['NAME']):
-				verbosePrint(label, verbose, end='')
-				if j < len(record['NAME']) - 1:
-					verbosePrint('.', verbose, end='')
-				else:
-					verbosePrint('', verbose)
-			verbosePrint('TYPE: %s' % record['TYPE'], verbose)
-			verbosePrint('CLASS: %s' % record['CLASS'], verbose)
-			verbosePrint('TTL: %i' % record['TTL'], verbose)
-			verbosePrint('RDLENGTH: %i' % record['RDLENGTH'], verbose)
-			verbosePrint('RDATA: %s' % record['RDATA'], verbose)
-			i += 1
+	try:
+		i = 0
+		for record in p_response['RR']:
+			if record['RR_TYPE'] == 'ANCOUNT_ANSWER':
+				verbosePrint('############################################\nAnswer section %i' % i, verbose)
+				verbosePrint('NAME: ', verbose, end='')
+				for j, label in enumerate(record['NAME']):
+					verbosePrint(label, verbose, end='')
+					if j < len(record['NAME']) - 1:
+						verbosePrint('.', verbose, end='')
+					else:
+						verbosePrint('', verbose)
+				verbosePrint('TYPE: %s' % record['TYPE'], verbose)
+				verbosePrint('CLASS: %s' % record['CLASS'], verbose)
+				verbosePrint('TTL: %i' % record['TTL'], verbose)
+				verbosePrint('RDLENGTH: %i' % record['RDLENGTH'], verbose)
+				verbosePrint('RDATA: %s' % record['RDATA'], verbose)
+				i += 1
+	except KeyError:
+		pass
 	
-	i = 0
-	for record in p_response['RR']:
-		if record['RR_TYPE'] == 'NSCOUNT_ANSWER':
-			verbosePrint('############################################\nAuthority section %i' % i, verbose)
-			verbosePrint('NAME: ', verbose, end='')
-			for j, label in enumerate(record['NAME']):
-				verbosePrint(label, verbose, end='')
-				if j < len(record['NAME']) - 1:
-					verbosePrint('.', verbose, end='')
-				else:
-					verbosePrint('', verbose)
-			verbosePrint('TYPE: %s' % record['TYPE'], verbose)
-			verbosePrint('CLASS: %s' % record['CLASS'], verbose)
-			verbosePrint('TTL: %i' % record['TTL'], verbose)
-			verbosePrint('RDLENGTH: %i' % record['RDLENGTH'], verbose)
-			verbosePrint('RDATA: %s' % record['RDATA'], verbose)
-			i += 1
+	try:
+		i = 0
+		for record in p_response['RR']:
+			if record['RR_TYPE'] == 'NSCOUNT_ANSWER':
+				verbosePrint('############################################\nAuthority section %i' % i, verbose)
+				verbosePrint('NAME: ', verbose, end='')
+				for j, label in enumerate(record['NAME']):
+					verbosePrint(label, verbose, end='')
+					if j < len(record['NAME']) - 1:
+						verbosePrint('.', verbose, end='')
+					else:
+						verbosePrint('', verbose)
+				verbosePrint('TYPE: %s' % record['TYPE'], verbose)
+				verbosePrint('CLASS: %s' % record['CLASS'], verbose)
+				verbosePrint('TTL: %i' % record['TTL'], verbose)
+				verbosePrint('RDLENGTH: %i' % record['RDLENGTH'], verbose)
+				verbosePrint('RDATA: %s' % record['RDATA'], verbose)
+				i += 1
+	except KeyError:
+		pass
 	
-	i = 0
-	for record in p_response['RR']:
-		if record['RR_TYPE'] == 'ARCOUNT_ANSWER':
-			verbosePrint('############################################\nAdditional section %i' % i, verbose)
-			verbosePrint('NAME: ', verbose, end='')
-			for j, label in enumerate(record['NAME']):
-				verbosePrint(label, verbose, end='')
-				if j < len(record['NAME']) - 1:
-					verbosePrint('.', verbose, end='')
-				else:
-					verbosePrint('', verbose)
-			verbosePrint('TYPE: %s' % record['TYPE'], verbose)
-			verbosePrint('CLASS: %s' % record['CLASS'], verbose)
-			verbosePrint('TTL: %i' % record['TTL'], verbose)
-			verbosePrint('RDLENGTH: %i' % record['RDLENGTH'], verbose)
-			verbosePrint('RDATA: %s' % record['RDATA'], verbose)
-			i += 1
+	try:
+		i = 0
+		for record in p_response['RR']:
+			if record['RR_TYPE'] == 'ARCOUNT_ANSWER':
+				verbosePrint('############################################\nAdditional section %i' % i, verbose)
+				verbosePrint('NAME: ', verbose, end='')
+				for j, label in enumerate(record['NAME']):
+					verbosePrint(label, verbose, end='')
+					if j < len(record['NAME']) - 1:
+						verbosePrint('.', verbose, end='')
+					else:
+						verbosePrint('', verbose)
+				verbosePrint('TYPE: %s' % record['TYPE'], verbose)
+				verbosePrint('CLASS: %s' % record['CLASS'], verbose)
+				verbosePrint('TTL: %i' % record['TTL'], verbose)
+				verbosePrint('RDLENGTH: %i' % record['RDLENGTH'], verbose)
+				verbosePrint('RDATA: %s' % record['RDATA'], verbose)
+				i += 1
+	except KeyError:
+		pass
 	
 	return success
 
@@ -1069,59 +1114,68 @@ def testOPCODEHandling(domainname, address, verbose):
 		verbosePrint('QCLASS: %s' % p_response['QCLASS'][i][0], verbose)
 		verbosePrint('QTYPE: %s' % p_response['QTYPE'][i][0], verbose)
 	
-	i = 0
-	for record in p_response['RR']:
-		if record['RR_TYPE'] == 'ANCOUNT_ANSWER':
-			verbosePrint('############################################\nAnswer section %i' % i, verbose)
-			verbosePrint('NAME: ', verbose, end='')
-			for j, label in enumerate(record['NAME']):
-				verbosePrint(label, verbose, end='')
-				if j < len(record['NAME']) - 1:
-					verbosePrint('.', verbose, end='')
-				else:
-					verbosePrint('', verbose)
-			verbosePrint('TYPE: %s' % record['TYPE'], verbose)
-			verbosePrint('CLASS: %s' % record['CLASS'], verbose)
-			verbosePrint('TTL: %i' % record['TTL'], verbose)
-			verbosePrint('RDLENGTH: %i' % record['RDLENGTH'], verbose)
-			verbosePrint('RDATA: %s' % record['RDATA'], verbose)
-			i += 1
+	try:
+		i = 0
+		for record in p_response['RR']:
+			if record['RR_TYPE'] == 'ANCOUNT_ANSWER':
+				verbosePrint('############################################\nAnswer section %i' % i, verbose)
+				verbosePrint('NAME: ', verbose, end='')
+				for j, label in enumerate(record['NAME']):
+					verbosePrint(label, verbose, end='')
+					if j < len(record['NAME']) - 1:
+						verbosePrint('.', verbose, end='')
+					else:
+						verbosePrint('', verbose)
+				verbosePrint('TYPE: %s' % record['TYPE'], verbose)
+				verbosePrint('CLASS: %s' % record['CLASS'], verbose)
+				verbosePrint('TTL: %i' % record['TTL'], verbose)
+				verbosePrint('RDLENGTH: %i' % record['RDLENGTH'], verbose)
+				verbosePrint('RDATA: %s' % record['RDATA'], verbose)
+				i += 1
+	except KeyError:
+		pass
 	
-	i = 0
-	for record in p_response['RR']:
-		if record['RR_TYPE'] == 'NSCOUNT_ANSWER':
-			verbosePrint('############################################\nAuthority section %i' % i, verbose)
-			verbosePrint('NAME: ', verbose, end='')
-			for j, label in enumerate(record['NAME']):
-				verbosePrint(label, verbose, end='')
-				if j < len(record['NAME']) - 1:
-					verbosePrint('.', verbose, end='')
-				else:
-					verbosePrint('', verbose)
-			verbosePrint('TYPE: %s' % record['TYPE'], verbose)
-			verbosePrint('CLASS: %s' % record['CLASS'], verbose)
-			verbosePrint('TTL: %i' % record['TTL'], verbose)
-			verbosePrint('RDLENGTH: %i' % record['RDLENGTH'], verbose)
-			verbosePrint('RDATA: %s' % record['RDATA'], verbose)
-			i += 1
+	try:
+		i = 0
+		for record in p_response['RR']:
+			if record['RR_TYPE'] == 'NSCOUNT_ANSWER':
+				verbosePrint('############################################\nAuthority section %i' % i, verbose)
+				verbosePrint('NAME: ', verbose, end='')
+				for j, label in enumerate(record['NAME']):
+					verbosePrint(label, verbose, end='')
+					if j < len(record['NAME']) - 1:
+						verbosePrint('.', verbose, end='')
+					else:
+						verbosePrint('', verbose)
+				verbosePrint('TYPE: %s' % record['TYPE'], verbose)
+				verbosePrint('CLASS: %s' % record['CLASS'], verbose)
+				verbosePrint('TTL: %i' % record['TTL'], verbose)
+				verbosePrint('RDLENGTH: %i' % record['RDLENGTH'], verbose)
+				verbosePrint('RDATA: %s' % record['RDATA'], verbose)
+				i += 1
+	except KeyError:
+		pass
 	
-	i = 0
-	for record in p_response['RR']:
-		if record['RR_TYPE'] == 'ARCOUNT_ANSWER':
-			verbosePrint('############################################\nAdditional section %i' % i, verbose)
-			verbosePrint('NAME: ', verbose, end='')
-			for j, label in enumerate(record['NAME']):
-				verbosePrint(label, verbose, end='')
-				if j < len(record['NAME']) - 1:
-					verbosePrint('.', verbose, end='')
-				else:
-					verbosePrint('', verbose)
-			verbosePrint('TYPE: %s' % record['TYPE'], verbose)
-			verbosePrint('CLASS: %s' % record['CLASS'], verbose)
-			verbosePrint('TTL: %i' % record['TTL'], verbose)
-			verbosePrint('RDLENGTH: %i' % record['RDLENGTH'], verbose)
-			verbosePrint('RDATA: %s' % record['RDATA'], verbose)
-			i += 1
+	try:
+		i = 0
+		for record in p_response['RR']:
+			if record['RR_TYPE'] == 'ARCOUNT_ANSWER':
+				verbosePrint('############################################\nAdditional section %i' % i, verbose)
+				verbosePrint('NAME: ', verbose, end='')
+				for j, label in enumerate(record['NAME']):
+					verbosePrint(label, verbose, end='')
+					if j < len(record['NAME']) - 1:
+						verbosePrint('.', verbose, end='')
+					else:
+						verbosePrint('', verbose)
+				verbosePrint('TYPE: %s' % record['TYPE'], verbose)
+				verbosePrint('CLASS: %s' % record['CLASS'], verbose)
+				verbosePrint('TTL: %i' % record['TTL'], verbose)
+				verbosePrint('RDLENGTH: %i' % record['RDLENGTH'], verbose)
+				verbosePrint('RDATA: %s' % record['RDATA'], verbose)
+				i += 1
+	except KeyError:
+		pass
 	
 	return success
 
@@ -1212,58 +1266,67 @@ def testZHandling(domainname, address, verbose):
 		verbosePrint('QCLASS: %s' % p_response['QCLASS'][i][0], verbose)
 		verbosePrint('QTYPE: %s' % p_response['QTYPE'][i][0], verbose)
 	
-	i = 0
-	for record in p_response['RR']:
-		if record['RR_TYPE'] == 'ANCOUNT_ANSWER':
-			verbosePrint('############################################\nAnswer section %i' % i, verbose)
-			verbosePrint('NAME: ', verbose, end='')
-			for j, label in enumerate(record['NAME']):
-				verbosePrint(label, verbose, end='')
-				if j < len(record['NAME']) - 1:
-					verbosePrint('.', verbose, end='')
-				else:
-					verbosePrint('', verbose)
-			verbosePrint('TYPE: %s' % record['TYPE'], verbose)
-			verbosePrint('CLASS: %s' % record['CLASS'], verbose)
-			verbosePrint('TTL: %i' % record['TTL'], verbose)
-			verbosePrint('RDLENGTH: %i' % record['RDLENGTH'], verbose)
-			verbosePrint('RDATA: %s' % record['RDATA'], verbose)
-			i += 1
+	try:
+		i = 0
+		for record in p_response['RR']:
+			if record['RR_TYPE'] == 'ANCOUNT_ANSWER':
+				verbosePrint('############################################\nAnswer section %i' % i, verbose)
+				verbosePrint('NAME: ', verbose, end='')
+				for j, label in enumerate(record['NAME']):
+					verbosePrint(label, verbose, end='')
+					if j < len(record['NAME']) - 1:
+						verbosePrint('.', verbose, end='')
+					else:
+						verbosePrint('', verbose)
+				verbosePrint('TYPE: %s' % record['TYPE'], verbose)
+				verbosePrint('CLASS: %s' % record['CLASS'], verbose)
+				verbosePrint('TTL: %i' % record['TTL'], verbose)
+				verbosePrint('RDLENGTH: %i' % record['RDLENGTH'], verbose)
+				verbosePrint('RDATA: %s' % record['RDATA'], verbose)
+				i += 1
+	except KeyError:
+		pass
 	
-	i = 0
-	for record in p_response['RR']:
-		if record['RR_TYPE'] == 'NSCOUNT_ANSWER':
-			verbosePrint('############################################\nAuthority section %i' % i, verbose)
-			verbosePrint('NAME: ', verbose, end='')
-			for j, label in enumerate(record['NAME']):
-				verbosePrint(label, verbose, end='')
-				if j < len(record['NAME']) - 1:
-					verbosePrint('.', verbose, end='')
-				else:
-					verbosePrint('', verbose)
-			verbosePrint('TYPE: %s' % record['TYPE'], verbose)
-			verbosePrint('CLASS: %s' % record['CLASS'], verbose)
-			verbosePrint('TTL: %i' % record['TTL'], verbose)
-			verbosePrint('RDLENGTH: %i' % record['RDLENGTH'], verbose)
-			verbosePrint('RDATA: %s' % record['RDATA'], verbose)
-			i += 1
+	try:
+		i = 0
+		for record in p_response['RR']:
+			if record['RR_TYPE'] == 'NSCOUNT_ANSWER':
+				verbosePrint('############################################\nAuthority section %i' % i, verbose)
+				verbosePrint('NAME: ', verbose, end='')
+				for j, label in enumerate(record['NAME']):
+					verbosePrint(label, verbose, end='')
+					if j < len(record['NAME']) - 1:
+						verbosePrint('.', verbose, end='')
+					else:
+						verbosePrint('', verbose)
+				verbosePrint('TYPE: %s' % record['TYPE'], verbose)
+				verbosePrint('CLASS: %s' % record['CLASS'], verbose)
+				verbosePrint('TTL: %i' % record['TTL'], verbose)
+				verbosePrint('RDLENGTH: %i' % record['RDLENGTH'], verbose)
+				verbosePrint('RDATA: %s' % record['RDATA'], verbose)
+				i += 1
+	except KeyError:
+		pass
 	
-	i = 0
-	for record in p_response['RR']:
-		if record['RR_TYPE'] == 'ARCOUNT_ANSWER':
-			verbosePrint('############################################\nAdditional section %i' % i, verbose)
-			verbosePrint('NAME: ', verbose, end='')
-			for j, label in enumerate(record['NAME']):
-				verbosePrint(label, verbose, end='')
-				if j < len(record['NAME']) - 1:
-					verbosePrint('.', verbose, end='')
-				else:
-					verbosePrint('', verbose)
-			verbosePrint('TYPE: %s' % record['TYPE'], verbose)
-			verbosePrint('CLASS: %s' % record['CLASS'], verbose)
-			verbosePrint('TTL: %i' % record['TTL'], verbose)
-			verbosePrint('RDLENGTH: %i' % record['RDLENGTH'], verbose)
-			verbosePrint('RDATA: %s' % record['RDATA'], verbose)
-			i += 1
+	try:
+		i = 0
+		for record in p_response['RR']:
+			if record['RR_TYPE'] == 'ARCOUNT_ANSWER':
+				verbosePrint('############################################\nAdditional section %i' % i, verbose)
+				verbosePrint('NAME: ', verbose, end='')
+				for j, label in enumerate(record['NAME']):
+					verbosePrint(label, verbose, end='')
+					if j < len(record['NAME']) - 1:
+						verbosePrint('.', verbose, end='')
+					else:
+						verbosePrint('', verbose)
+				verbosePrint('TYPE: %s' % record['TYPE'], verbose)
+				verbosePrint('CLASS: %s' % record['CLASS'], verbose)
+				verbosePrint('TTL: %i' % record['TTL'], verbose)
+				verbosePrint('RDLENGTH: %i' % record['RDLENGTH'], verbose)
+				verbosePrint('RDATA: %s' % record['RDATA'], verbose)
+				i += 1
+	except KeyError:
+		pass
 	
 	return success
