@@ -136,7 +136,7 @@ def testStandardQuery(domainname, address, verbose):
 	verbosePrint('RA: %s' % p_response['RA'], verbose, end='\n')
 
 	#Z
-	num = (p_response['Z'], 2)
+	num = int(p_response['Z'], 2)
 	verbosePrint('Z: %s' % p_response['Z'], verbose, end='')
 	if not testValue(num, 0, verbose):
 		success = False
@@ -161,4 +161,4 @@ def testStandardQuery(domainname, address, verbose):
 	if not testValue(num, 0, verbose):
 		success = False
 
-	return (success, p_response)
+	return success
