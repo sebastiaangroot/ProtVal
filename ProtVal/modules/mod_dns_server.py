@@ -45,7 +45,7 @@ def initMod():
 			dest_port = input('Enter the port to contact the DNS server on (53 is default): ')
 			if dest_port == '':
 				dest_port = 53
-			result = testInverseQuery(d_ip, (dest_ip, int(dest_port)), True)
+			result = testInverseQuery(q_ip, (dest_ip, int(dest_port)), True)
 			report('\nInverse Query:\t\t\t', result)
 		elif choice == 3:
 			dest_ip = input('Enter the IP address of the DNS server: ')
@@ -96,7 +96,7 @@ def initMod():
 			result = testStandardQuery(dn, (dest_ip, int(dest_port)), False)
 			report('Standard Query:\t\t\t', result)
 
-			result = testInverseQuery(d_ip, (dest_ip, int(dest_port)), False)
+			result = testInverseQuery(q_ip, (dest_ip, int(dest_port)), False)
 			report('Inverse Query:\t\t\t', result)
 
 			result = testServerStatusRequest((dest_ip, int(dest_port)), False)
