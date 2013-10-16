@@ -275,12 +275,7 @@ class DNSPacket():
 				if iteration_reference == 0:
 					break
 				
-				
-				if entries == 1:
-					self.response_items['RR']['RR_TYPE'] = self.response_items['RR'].get('RR_TYPE', '') + name_dict  
-				else:
-					print('else')
-					self.response_items['RR'][i]['RR_TYPE'] = self.response_items['RR'][i].get('RR_TYPE', '') + name_dict
+				self.response_items['RR'][i]['RR_TYPE'] = self.response_items['RR'][i].get('RR_TYPE', '') + name_dict
 				
 				name_start += 2
 				print(name_start)
@@ -298,7 +293,7 @@ class DNSPacket():
 						name_start += 1
 					self.response_items['RR'][i]['RDATA'] = self.temp_dict_rdata['RDATA']
 				else:
-					self.response_items['RR']['RDATA'] = int(self.removeBin(bin(byte_array[name_start]), bin(byte_array[name_start+1])))
+					self.response_items['RR'][i]['RDATA'] = int(self.removeBin(bin(byte_array[name_start]), bin(byte_array[name_start+1])))
 					name_start += 2
 				print(name_start)
 				name_count += 1	
