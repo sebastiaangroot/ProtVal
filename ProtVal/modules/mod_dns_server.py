@@ -1,5 +1,6 @@
 import modules.dnspacket as dnspacket
 import socket
+import traceback
 
 def getModuleName():
 	return "DNS Server Validator"
@@ -42,6 +43,7 @@ def initMod():
 				report('\nStandard Query:\t\t\t', result)
 			except:
 				print('Error while calling testStandardQuery')
+				traceback.print_exc()
 		elif choice == 2:
 			q_ip = input('Enter an IP address to inverse query: ')
 			dest_ip = input('Enter the IP address of the DNS server: ')
@@ -53,6 +55,7 @@ def initMod():
 				report('\nInverse Query:\t\t\t', result)
 			except:
 				print('Error while calling testInverseQuery')
+				traceback.print_exc()
 		elif choice == 3:
 			dest_ip = input('Enter the IP address of the DNS server: ')
 			dest_port = input('Enter the port to contact the DNS server on (53 is default): ')
@@ -63,6 +66,7 @@ def initMod():
 				report('\nServer status request:\t', result)
 			except:
 				print('Error while calling testServerStatusRequest')
+				traceback.print_exc()
 		elif choice == 4:
 			dn = input('Enter a domainname to query: ')
 			dest_ip = input('Enter the IP address of the DNS server: ')
@@ -74,6 +78,7 @@ def initMod():
 				report('\nRecursion available:\t\t', result)
 			except:
 				print('Error while calling testRecursionAvailable')
+				traceback.print_exc()
 		elif choice == 5:
 			dn = input('Enter a domainname to query: ')
 			dest_ip = input('Enter the IP address of the DNS server: ')
@@ -85,6 +90,7 @@ def initMod():
 				report('\nQR bit Error handling:\t', result)
 			except:
 				print('Error while calling testQRHandling')
+				traceback.print_exc()
 		elif choice == 6:
 			dn = input('Enter a domainname to query: ')
 			dest_ip = input('Enter the IP address of the DNS server: ')
@@ -96,6 +102,7 @@ def initMod():
 				report('\nOPCODE Error handling:\t', result)
 			except:
 				print('Error while calling testOPCODEHandling')
+				traceback.print_exc()
 		elif choice == 7:
 			dn = input('Enter a domainname to query: ')
 			dest_ip = input('Enter the IP address of the DNS server: ')
@@ -107,6 +114,7 @@ def initMod():
 				report('\nZ Field error handling:\t', result)
 			except:
 				print('Error while calling testZHandling')
+				traceback.print_exc()
 		elif choice == 8:
 			dn = input('Enter a domainname to query: ')
 			q_ip = input('Enter an IP address to inverse query: ')
@@ -119,42 +127,49 @@ def initMod():
 				report('Standard Query:\t\t\t', result)
 			except:
 				print('Error while calling testStandardQuery')
+				traceback.print_exc()
 
 			try:
 				result = testInverseQuery(q_ip, (dest_ip, int(dest_port)), False)
 				report('Inverse Query:\t\t\t', result)
 			except:
 				print('Error while calling testInverseQuery')
+				traceback.print_exc()
 
 			try:
 				result = testServerStatusRequest((dest_ip, int(dest_port)), False)
 				report('Server status request:\t', result)
 			except:
 				print('Error while calling testServerStatusRequest')
+				traceback.print_exc()
 
 			try:
 				result = testRecursionAvailable(dn, (dest_ip, int(dest_port)), False)
 				report('Recursion available:\t\t', result)
 			except:
 				print('Error while calling testRecursionAvailable')
+				traceback.print_exc()
 
 			try:
 				result = testQRHandling(dn, (dest_ip, int(dest_port)), False)
 				report('QR bit Error handling:\t', result)
 			except:
 				print('Error while calling testQRHandling')
+				traceback.print_exc()
 
 			try:
 				result = testOPCODEHandling(dn, (dest_ip, int(dest_port)), False)
 				report('OPCODE Error handling:\t', result)
 			except:
 				print('Error while calling testOPCODEHandling')
+				traceback.print_exc()
 
 			try:
 				result = testZHandling(dn, (dest_ip, int(dest_port)), False)
 				report('Z Field error handling:\t', result)
 			except:
 				print('Error while calling testZHandling')
+				traceback.print_exc()
 				
 def report(message, success):
 	if success:
