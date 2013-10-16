@@ -117,15 +117,12 @@ class DNSPacket():
 			if len(iterate) > 2:
 				iterate_stripped = iterate[2:]
 				return_iterate = '0' * (8-len(iterate[2:])) + iterate_stripped
-				print('debug', return_iterate)
 				value_new.append(return_iterate)
 			elif len(iterate) <= 2:
 				return_iterate = '0' * 8
-				print('debug', return_iterate)
 				value_new.append('0' * 8)
 			elif len(iterate) == 10:
 				return_iterate = iterate[2:]
-				print('debug', return_iterate)
 				value_new.append(return_iterate)
 		value_return = ''
 		for i in value_new:
@@ -241,7 +238,6 @@ class DNSPacket():
 					iteration_reference_loop += 1
 
 
-				print('else')	
 				self.response_items['RR'][i]['NAME'] = self.response_items['RR'][i].get('NAME', '') + self.temp_dict['domain_name_' + str(t) +'part'] + '.'
 				t += 1
 				
@@ -566,28 +562,3 @@ class DNSPacket():
 	
 	def addAdditionalRDATA(self, num, data_list):
 		self.__addRRRDATA__(self.additionals, index, data_list)
-
-def main():
-	print("Class methods names of DNSPacket")
-	for i in dir(DNSPacket):
-		if '_' not in i:
-			print(i)
-	q = DNSPacket()
-	byte_array = q.testResponse()
-	q.parseResponse(byte_array)
-	
-# 	iter = 0
-# 	for i in byte_array:
-# 		print(i, iter)
-# 		iter += 1
-# 	
-# 	print('Koen\'s test')
-# 	r = DNSPacket()
-# 	standard_array = r.getStandardQueryPacket('koenveelenturf.nl')
-# 	print('standard_array:', standard_array)
-# 	print(r.header)
-# 	print(r.questions)	
-# 	print(r.parseResponse(standard_array))
-		
-if __name__ == '__main__':
-	main()
