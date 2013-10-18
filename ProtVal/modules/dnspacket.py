@@ -154,6 +154,7 @@ class DNSPacket():
 		
 		if len(byte_array) <= 12:
 			return self.response_items
+		print(len(byte_array))
 		
 		iteration_read_label = 12
 		iteration_qdcount = int(self.removeBin(bin(byte_array[4]), bin(byte_array[5])), 2)
