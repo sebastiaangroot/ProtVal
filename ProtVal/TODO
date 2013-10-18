@@ -1,2 +1,0 @@
-QTYPE and QCLASS needs to be added in the while loop.
-QTYPE and QCLASS can have multiple entries, exactly QDCOUNT
