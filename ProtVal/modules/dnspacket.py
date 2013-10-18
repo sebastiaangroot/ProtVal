@@ -154,7 +154,6 @@ class DNSPacket():
 		
 		if len(byte_array) <= 12:
 			return self.response_items
-		print(len(byte_array))
 		
 		iteration_read_label = 12
 		iteration_qdcount = int(self.removeBin(bin(byte_array[4]), bin(byte_array[5])), 2)
@@ -190,7 +189,10 @@ class DNSPacket():
 				x = 0
 				y += 4
 				iteration_read_label = y
-				iteration_octet = byte_array[iteration_read_label]
+				try:
+					iteration_octet = byte_array[iteration_read_label]
+				except IndexError:
+					return self.response_items
 		iterable = y
 		del self.temp_dict, iteration_read_label, iteration_qdcount, iteration_octet, i, x, y, z, i_test
 		
