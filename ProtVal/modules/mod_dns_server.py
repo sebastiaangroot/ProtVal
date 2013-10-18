@@ -1109,7 +1109,7 @@ def testOPCODEHandling(domainname, address, verbose):
 		verbosePrint(' (Refused)', verbose, end='')
 	else:
 		verbosePrint(' (Unkown error)', verbose, end='')
-	if not testValue(num, 1, verbose):
+	if not testValue(num, 4, verbose):
 		success = False
 	
 	#QDCOUNT
