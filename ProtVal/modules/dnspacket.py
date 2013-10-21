@@ -112,6 +112,10 @@ class DNSPacket():
 		return packet
 	
 	def removeBin(self, *value):
+		"""
+		This method receives a variable number of arguments and returns the correct binary representation. 
+		If more then one argument is given, it will concatenate the binary representations.
+		"""
 		value_new = []
 		for iterate in value:
 			if len(iterate) > 2:
@@ -131,12 +135,15 @@ class DNSPacket():
 		
 	
 	def parseResponse(self, byte_array):
-		
+		"""
+		This methods receives a byte array and parses them.
+		The dict "reponse_items" holds all the values that are parsed.
+		"""
 		self.response_items['ID'] = self.removeBin(bin(byte_array[0]), bin(byte_array[1]))
 		
-		list_header = ['QR', 'OPCODE', 'AA', 'TC', 'RD']
-		bin_header = self.removeBin(bin(byte_array[2]))
-		self.response_items[list_header[0]] = bin_header[0]
+		list_header = ['QR', 'OPCODE', 'AA', 'TC', 'RD'] #List that holds all the keywords that are used later in the program. 
+		bin_header = self.removeBin(bin(byte_array[2])) #Example: Calling removeBin method and removes the 0b from the byte array.
+		self.response_items[list_header[0]] = bin_header[0] #Example: add the returned value from removeBin with key/value pair QR="returned value"
 		self.response_items[list_header[1]] = bin_header[1:5]
 		i = 5
 		while i < 8:
@@ -154,20 +161,22 @@ class DNSPacket():
 		
 		if len(byte_array) <= 12:
 			return self.response_items
-		
-		iteration_read_label = 12
-		iteration_qdcount = int(self.removeBin(bin(byte_array[4]), bin(byte_array[5])), 2)
-		iteration_octet = byte_array[12]
-		i = 0
-		x = 0
-		y = 13
-		z = 1
-		i_test = 0
+		"""
+		Here comes the more complicated part. All byte_array values are iterated and checked if it's a label.
+		"""
+		iteration_read_label = 12 #Byte 12 always contains the first label.
+		iteration_qdcount = int(self.removeBin(bin(byte_array[4]), bin(byte_array[5])), 2) #Same as QDCOUNT, this tells us how many question sections there are in this part.
+		iteration_octet = byte_array[12] #This tells us how many characters we expect to parse (i.e. 4 for 'test').
+		i = 0 #Just a variable that is used for counting an iteration. In this case it counts how many question sections we have parsed
+		x = 0 #Just a variable that is used for counting an iteration. In this case it counts how many hostnames or subdomains we have parsed.
+		y = 13 #Just a variable that is used for counting an iteration. In this case it counts which byte we have to parse for a specific character of a domain name (i.e. if it holds 15, and if the parser parses it we may get the value 't')
+		z = 1 #Just a varaible that is used for counting an iteration. In this case it counts how many subdomains or hostnames we have parsed. (i.e. 1 could be test, 2 could be example, 3 could be .com)
+		i_test = 0 #This variable is used as a boolean value. This checks if we have to add the QNAME/QTYPE/QCLASS section in the response_items dict.
 		self.response_items
 		self.temp_dict = {}
 		while i < iteration_qdcount:
 			if i_test == 0:
-				self.response_items['QNAME'] = [[]] *iteration_qdcount
+				self.response_items['QNAME'] = [[]] *iteration_qdcount #Adding the QNAME section as a list in a list. Multiple lists are created if the QDCOUNT variable is more than 1.
 				self.response_items['QTYPE'] = [[]] *iteration_qdcount
 				self.response_items['QCLASS'] = [[]] *iteration_qdcount
 				i_test = 1
@@ -196,7 +205,11 @@ class DNSPacket():
 		iterable = y
 		del self.temp_dict, iteration_read_label, iteration_qdcount, iteration_octet, i, x, y, z, i_test
 		
-		ancount_entries = int(self.response_items['ANCOUNT'], 2)
+		"""
+		This is also a bit more complicated. Here we parse all ANCOUNT, NSCOUNT and ARCOUNT sections.
+		"""
+		
+		ancount_entries = int(self.response_items['ANCOUNT'], 2) #Here we check how many ANCOUNT sections there are.
 		nscount_entries = int(self.response_items['NSCOUNT'], 2)
 		arcount_entries = int(self.response_items['ARCOUNT'], 2)
 		entries = ancount_entries + nscount_entries + arcount_entries
@@ -208,7 +221,7 @@ class DNSPacket():
 			i += 1
 		
 		i = 0
-		name_start = iterable
+		name_start = iterable #We must know where to start. The variable "iterable" holds the value of the byte array that we must parse.
 		reference = 0
 		iteration_reference_loop = 0
 		self.temp_dict = {}
@@ -236,7 +249,7 @@ class DNSPacket():
 			else:
 				name_dict = 'ERROR'
 			self.response_items['RR'][i]['NAME'] = list()
-			if byte_array[name_start] & 0b11000000 == 0b11000000:
+			if byte_array[name_start] & 0b11000000 == 0b11000000: #We must first check if the is a pointer, if this is the case we will start parsing. Note: this all happens in a while loop.
 				while byte_array[name_start] & 0b11000000 == 0b11000000:
 					reference = int(self.removeBin(bin(byte_array[name_start]), bin(byte_array[name_start+1]))[2:], 2)
 					iteration_reference = byte_array[reference]
@@ -260,7 +273,7 @@ class DNSPacket():
 						if (iteration_reference == 0) | (iteration_reference == 192):
 							
 							if iteration_reference == 192:
-								loop_count = byte_array[iteration_count-iteration_reference+1]
+								loop_count = byte_array[iteration_count-iteration_reference+1] #The RDATA section could also contain a pointer.
 								iteration_reference = byte_array[loop_count]
 								iter_loop = loop_count + 1
 								iteration_count = iteration_reference + loop_count
