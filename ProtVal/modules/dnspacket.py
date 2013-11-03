@@ -1,3 +1,9 @@
+#=====================================================================
+#filename       : modules/dnspacket.py
+#description    : DNS packet module for ProtVal
+#python_version : 3.x
+#=====================================================================
+
 import socket
 import random
 

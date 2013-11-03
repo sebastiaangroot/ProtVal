@@ -1,3 +1,9 @@
+#=====================================================================
+#filename       : modules/mod_dns_server.py
+#description    : DNS server module for ProtVal
+#python_version : 3.x
+#=====================================================================
+
 import modules.dnspacket as dnspacket
 import socket
 import traceback

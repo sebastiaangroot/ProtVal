@@ -1,3 +1,9 @@
+#=====================================================================
+#filename       : __main__.py
+#description    : Main function of ProtVal
+#python_version : 3.x
+#=====================================================================
+
 import os
 import re
 
