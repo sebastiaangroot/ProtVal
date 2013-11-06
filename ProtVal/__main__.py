@@ -72,6 +72,7 @@ At this point, the following DNS section formats of DNS are supported:
 Header, Question, Answer, Authority, Additional
 
 Parser supports the following fields in the header section format:
+Header:
 ID (16bits; Identifier, copied matching the corresponding reply)
 QR (1 bit; Must be 0 (query) or 1 (response))
 OPCODE (4 bits; Specified kind of query, 0 standard QUERY, 1 inverse IQUERY, 2 server status (STATUS), reserved 3-15)
